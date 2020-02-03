@@ -2,3 +2,4 @@
 @include('includes.sidebar')
 @yield('content')
 @include('includes.footer')
+@yield('js')

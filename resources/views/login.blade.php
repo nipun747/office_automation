@@ -16,8 +16,9 @@
 
 </head>
 
-<body class="gray-bg">
-
+<body  class="gray-bg">
+    <form action="{{url('/login_form_submit')}}" method=post>
+@csrf
     <div class="middle-box text-center loginscreen animated fadeInDown">
         <div>
             <div>
@@ -32,10 +33,10 @@
             <p>Login in. To see it in action.</p>
             <form class="m-t" role="form" action="index.html">
                 <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Username" required="">
+                    <input type="email" name="email" class="form-control" placeholder="Username" required="">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" required="">
+                    <input type="password" name="password" class="form-control" placeholder="Password" required="">
                 </div>
                 <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
 
@@ -52,6 +53,22 @@
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.js"></script>
 
+    
+
 </body>
+</form>
 
 @endsection
+@section('js')
+<script type="text/javascript">
+    $(document).ready(function() {
+        //alert("Settings page was loaded");
+        //console.log("hii");
+         $("p").click(function(){
+            $(this).hide();
+          });
+    });
+</script>
+@endsection
+
+

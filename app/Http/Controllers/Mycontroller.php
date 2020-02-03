@@ -74,6 +74,7 @@ class Mycontroller extends Controller
     }
     public function employee_form_submit(Request $request){
         $employee_code = $request->input('employee_code');
+
         $employee_name = $request->input('employee_name');
         $designation =$request->input('designation');
         $department = $request->input('department');
@@ -113,4 +114,9 @@ class Mycontroller extends Controller
 
         return view('employee_view_form',['employee'=>$users]);
     }
+     public function login_form_submit(Request $request){
+        $email = $request->input('email');
+        $password = $request->input('password');
+        echo 'inserted';
+        }
 }
