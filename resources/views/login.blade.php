@@ -33,7 +33,7 @@
             <p>Login in. To see it in action.</p>
             <form class="m-t" role="form" action="index.html">
                 <div class="form-group">
-                    <input type="email" name="email" class="form-control" placeholder="Username" required="">
+                    <input type="text" name="employee_code" class="form-control" placeholder="Usercode" required="">
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" class="form-control" placeholder="Password" required="">

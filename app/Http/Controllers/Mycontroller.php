@@ -115,8 +115,20 @@ class Mycontroller extends Controller
         return view('employee_view_form',['employee'=>$users]);
     }
      public function login_form_submit(Request $request){
-        $email = $request->input('email');
+        $employee_code = $request->input('employee_code');
         $password = $request->input('password');
-        echo 'inserted';
+
+        $employee = DB::table('employees')
+                ->select('employee_name','designation','department','line_manager_id')
+                ->where('employee_code', $employee_code)
+                ->where('password', $password)
+                ->get();
+        if(count($employee) > 0){
+            return view('dashboard');
+        }
+        else{
+             return view('login');
+        }
+        //echo $email."-----------".$password;
         }
 }
