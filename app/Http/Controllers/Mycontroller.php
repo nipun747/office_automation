@@ -79,13 +79,46 @@ class Mycontroller extends Controller
         $designation =$request->input('designation');
         $department = $request->input('department');
         $line_manager_id = $request->input('line_manager_id');
+        $this->validate($request, [
+            'input_img' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        $this->validate($request, [
+            'input_signature' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+             if ( $request->hasFile('input_img')){
+                if ($request->file('input_img')->isValid()){
+                    $file = $request->file('input_img');
+                    $name = $file->getClientOriginalName();
+                    $file->move('images' , $name);
+                    $inputs = $request->all();
+                    $inputs['path'] = $name;
+
+                    
+                
+                }}
+
+             if ( $request->hasFile('input_signature')){
+                if ($request->file('input_signature')->isValid()){
+                    $file = $request->file('input_signature');
+                    $signature = $file->getClientOriginalName();
+                    $file->move('images' , $signature);
+                    $inputs = $request->all();
+                    $inputs['path'] = $signature;
+
+                    
+                
+                }
+            }
         
         DB::table('employees')->insert(
             ['employee_code' => $employee_code,
             'employee_name' => $employee_name,
             'designation' => $designation,
             'department' => $department,
-            'line_manager_id' => $line_manager_id
+            'line_manager_id' => $line_manager_id,
+            'profile_image' => $name,
+            'signature' => $signature
             ]);
         echo 'Inserted';
     }
@@ -131,4 +164,54 @@ class Mycontroller extends Controller
         }
         //echo $email."-----------".$password;
         }
+        public function fileUpload(Request $request) {
+
+        $this->validate($request, [
+            'input_img' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+             if ( $request->hasFile('input_img')){
+                if ($request->file('input_img')->isValid()){
+                    $file = $request->file('input_img');
+                    $name = $file->getClientOriginalName();
+                    $file->move('images' , $name);
+                    $inputs = $request->all();
+                    $inputs['path'] = $name;
+
+                    
+                echo 'Inserted';
+                }
+            }
+     /*if ($request->hasFile('photo')) {
+            $image      = $request->file('photo');
+            $fileName   = time() . '.' . $image->getClientOriginalExtension();
+
+            $img = Image::make($image->getRealPath());
+            $img->resize(120, 120, function ($constraint) {
+                $constraint->aspectRatio();                 
+            });
+
+            $img->stream(); // <-- Key point
+
+            //dd();
+            Storage::disk('local')->put('images/1/smalls'.'/'.$fileName, $img, 'public');
+}*/
+   
+    }
+
+    public function store(Request $request)
+  {
+
+  // get current time and append the upload file extension to it,
+  // then put that name to $photoName variable.
+  $photoName = time().'.'.$request->user_photo->getClientOriginalExtension();
+
+  /*
+  talk the select file and move it public directory and make avatars
+  folder if doesn't exsit then give it that unique name.
+  */
+  $request->user_photo->move(public_path('avatars'), $photoName);
+
+  }
+
 }

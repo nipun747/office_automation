@@ -4,11 +4,12 @@
   
   
  
-<form action="{{url('/employee_form_submit')}}" method="post">
+<form enctype="multipart/form-data" action="{{url('/employee_form_submit')}}" method="post">
   @csrf
     <div class="col-lg-6 offset-lg-3">
   <h4 class="text-center">Leave Management</h4>
 </div>
+<p>this is a employee leave form</p>
  
   <div class="form-group">
     <label for="employee_code">Employee Code:</label>
@@ -50,10 +51,39 @@
   </div>
   
    <div class="form-group text-center">
+  
+  </div>
+  
+    <div class="form-group">
+        <label for="imageInput">File input</label>
+        <input  name="input_img" type="file" id="imageInput">
+        <img class="col-sm-6" id="preview"  src="">
+    </div>
+   
+   <div class="form-group">
+        <label for="signatureinput">Signature input</label>
+        <input  name="input_signature" type="file" >
+        <img class="col-sm-6" id="preview"  src="">
+    </div>
+    <div class="form-group text-center">
   <button type="submit" class="btn btn-primary">Submit</button>
   </div>
-
 </form>
 
 </div>
+<script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+@endsection
+@section('js')
+<script type="text/javascript">
+    $(document).ready(function() {
+        //alert("Settings page was loaded");
+        //console.log("hii");
+         
+         $("p").click(function(){
+    $(this).toggleClass("red");
+        });
+    });
+</script>
 @endsection

@@ -64,10 +64,14 @@
     $(document).ready(function() {
         //alert("Settings page was loaded");
         //console.log("hii");
+         $("h3").click(function(){
+            $(this).fadeTo("slow",0.7);
+          });
          $("p").click(function(){
             $(this).hide();
-          });
-    });
+                });
+         });
+
 </script>
 @endsection
 
