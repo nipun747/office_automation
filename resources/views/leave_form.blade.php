@@ -1,49 +1,97 @@
 @extends('layouts.app')
 @section('content')
+
+    <link href="{{asset('assets/css/plugins/datapicker/datepicker3.css')}}" rel="stylesheet">
+
 <form action="{{url('/leave_form_submit')}}" method="post">
 	@csrf
-<h3>Leave Category</h3>
+<h3>Leave form</h3>
+<div class="row">
+		<div class="col-2 form-group has-feedback">
+			<label>Leave Type</label>
  <select name="leave" class="form-control">
   @foreach($catagories as $catagory)
   <option value = "{{$catagory->leave_id}}">{{$catagory->catagory}}</option>
   @endforeach
   </select><br>
- <input type="radio" name="leave_type">Full Day Leave<br>
-<input type="radio" name="leave_type">Half Day Leave<br>
+</div>
+		<div class="col-2 form-group has-feedback">
+<label>Choose a value:</label>
+
+<select name="leave_type" >
+  <option >Full Day Leave</option>
+  <option >Half Day Leave</option>
+ </select>
+</div>
+<div class="col-2 form-group has-feedback">
+	<label>Duty Assign to</label>
+<select name="employee_name" class="form-control">
+  @foreach($employee_names as $employee_name)
+  <option value = "{{$employee_name->employee_id}}">{{$employee_name->employee_name}}</option>
+  @endforeach
+  </select><br>
+</div>
+</div>
 <div class="container">
 	<div class="row">
-		<div class="col-12 form-group has-feedback">
+		<div class="col-2 form-group has-feedback">
 			<label>Start Date <span class="text-danger">*</span></label>
 			<input type="text" class="form-control has-feedback-left" id="fromdate" 
-				   placeholder="MM/DD/YYYY" name="fromdate">
+				   placeholder="YYYY-MM-DD" name="fromdate">
 		</div>
-		<div class="col-12 form-group has-feedback">
+		<div class="col-2 form-group has-feedback">
 			<label>End Date: <span class="text-danger">*</span></label>
 			<input type="text" class="form-control has-feedback-left" id="todate" 
-				   placeholder="MM/DD/YYYY" name="todate">
+				   placeholder="YYYY-MM-DD" name="todate">
 		</div>
-		<div class="col-12 form-group has-feedback">
+		<div class="col-2 form-group has-feedback">
 			<label>Leave Applied(days): <span class="text-danger">*</span></label>
 			<input type="text" class="form-control has-feedback-left" name="numberdays" 
 				   id="numberdays" disabled>
 		</div>
+
+		<div class="form-group" id="data_1">
+                                <label class="font-normal">Simple data input format</label>
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
+                                </div>
+                            </div>
 	</div>  
 </div>
-<label>Duty Assign To</label>
-  <input type="text" name="assign" class="form-control">
+
 
   <button type="submit" class="btn btn-primary">Submit</button>
   
 </form>
-<script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-@endsection
-@section('js')
+    <!-- Mainly scripts -->
+   @endsection
+   @section('js')  
+
+   <!-- Data picker -->
+   <script src="{{asset('assets/js/plugins/datapicker/bootstrap-datepicker.js')}}"></script>
+
+    <!-- Date range use moment.js')}} same as full calendar plugin -->
+    <script src="{{asset('assets/js/plugins/fullcalendar/moment.min.js')}}"></script>
+        <!-- Date range picker -->
+    <script src="{{asset('assets/js/plugins/daterangepicker/daterangepicker.js')}}"></script>
+
+    
+
+    <script>
+        $(document).ready(function(){            
+
+            var mem = $('#data_1 .input-group.date').datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true
+            });
+
+            var yearsAgo = new Date();
+            yearsAgo.setFullYear(yearsAgo.getFullYear() - 20);
+        });
+</script>
 <script type="text/javascript">
 
 $(function() {
@@ -68,13 +116,12 @@ $(function() {
 			let e = moment(endDate),
 				s = moment(startDate);
 			
-			return e.diff(s, "days");
+			return e.diff(s, "days")+1;
 		}
 		
 		return null;
 	}
 });
 </script>
-
-
+           
 @endsection

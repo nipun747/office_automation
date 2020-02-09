@@ -66,7 +66,12 @@ class Mycontroller extends Controller
                             ->select('leave_table.*')
                             ->where('status',1)
                             ->get();
-        return view('leave_form',['catagories'=>$catagories]);
+     $employee_names = DB::table('employees')
+                     ->select('employees.*')
+                            ->where('status',1)
+                            ->get();
+        
+        return view('leave_form',['catagories'=>$catagories,'employee_names'=>$employee_names]);
     }
     public function employee_view_form()
     { 
