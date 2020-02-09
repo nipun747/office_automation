@@ -28,6 +28,7 @@
                         <li><a href="{{url('department_form')}}">Department</a></li>
                         <li><a href="{{url('designation_form')}}">Designation</a></li>
                          <li><a href="{{url('login')}}">login</a></li>
+                           <li><a href="{{url('leave')}}">Leave form</a></li>
                         
                     </ul>
                 </li>

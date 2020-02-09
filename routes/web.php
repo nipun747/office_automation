@@ -23,5 +23,9 @@ Route::post('/designation_form_submit','Mycontroller@designation_form_submit');
 Route::post('/department_form_submit','Mycontroller@department_form_submit');
 Route::get('/employee_view_form','Mycontroller@employee_view_form');
 Route::get('/login','Mycontroller@login');
+Route::get('leave_form','Mycontroller@leave_form');
 Route::post('/login_form_submit','Mycontroller@login_form_submit');
 Route::post('fileupload','Mycontroller@fileupload');
+
+Route::post('leave_form_submit','Mycontroller@leave_form_submit');
+

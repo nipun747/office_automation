@@ -60,6 +60,14 @@ class Mycontroller extends Controller
                 ]);
         
     }
+    public function leave_form()
+    {
+        $catagories = DB::table('leave_table')
+                            ->select('leave_table.*')
+                            ->where('status',1)
+                            ->get();
+        return view('leave_form',['catagories'=>$catagories]);
+    }
     public function employee_view_form()
     { 
         $employee = DB::table('employees')
@@ -127,6 +135,15 @@ class Mycontroller extends Controller
         
         DB::table('designation_table')->insert(
             ['designation' => $designation
+            
+            ]);
+        echo 'Inserted';
+    }
+        public function leave_form_submit(Request $request){
+         $catagory = $request->input('catagory');
+        
+        DB::table('leave_table')->insert(
+            ['catagory' => $catagory
             
             ]);
         echo 'Inserted';
@@ -213,5 +230,6 @@ class Mycontroller extends Controller
   $request->user_photo->move(public_path('avatars'), $photoName);
 
   }
+  
 
 }
