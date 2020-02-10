@@ -7,61 +7,76 @@
 <form enctype="multipart/form-data" action="{{url('/employee_form_submit')}}" method="post">
   @csrf
     <div class="col-lg-6 offset-lg-3">
-  <h4 class="text-center">Leave Management</h4>
+  <h4 class="text-center">Add Employee</h4>
 </div>
-<p>this is a employee leave form</p>
- 
-  <div class="form-group">
-    <label for="employee_code">Employee Code:</label>
-    <input type="text" name="employee_code" class="form-control">
+<div class="col-lg-12 row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label for="employee_code">Employee Code:</label>
+          <input type="text" name="employee_code" class="form-control">
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label for="designation">Designation:</label>    
+           <select name="designation" class="form-control">
+            @foreach($designations as $designation)
+            <option value = "{{$designation->designation_id}}">{{$designation->designation}}</option>
+            @endforeach
+          </select>   
+        </div>
+      </div>
   </div>
-  <div class="form-group">
-    <label for="employee_name">Employee Name:</label>
-    <input type="text" name="employee_name" class="form-control">
+  <div class="col-lg-12 row">
+      <div class="col-lg-6">
+        <div class="form-group">
+        <label for="employee_name">Employee Name:</label>
+        <input type="text" name="employee_name" class="form-control">
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+        <label for="employee_name">Employee Email:</label>
+        <input type="text" name="employee_email" class="form-control">
+      </div>
+      </div>
   </div>
-  <div class="form-group">
-     <label for="designation">Designation:</label>
-    
-   <select name="designation" class="form-control">
-  @foreach($designations as $designation)
-  <option value = "{{$designation->designation_id}}">{{$designation->designation}}</option>
-  @endforeach
-  </select>
-   
-  </div>
+  
+  
+<div class="col-lg-12 row">
+  <div class="col-lg-6">
    <div class="form-group">
     <label for="department">Department:</label>
-   
-     <select name="department" class="form-control">
-  @foreach($departments as $department)
-
-<option value="{{$department->department_id}}">{{$department->department}}</option>
-  @endforeach
+    <select name="department" class="form-control">
+    @foreach($departments as $department)
+    <option value="{{$department->department_id}}">{{$department->department}}</option>
+    @endforeach
     </select>
+    </div>
   </div>
+  <div class="col-lg-6">
   <div class="form-group">
-    <label for="line_manager">Line Manager:</label>
-   
+    <label for="line_manager">Line Manager:</label>   
      <select name="line_manager_id" class="form-control">
       @foreach($line_manager as $line_managers)
-  <option value="{{$line_managers->employee_id}}">{{$line_managers->employee_name}}</option>
-  @endforeach
-  
-</select>
+      <option value="{{$line_managers->employee_id}}">{{$line_managers->employee_name}}</option>
+      @endforeach  
+    </select>
   </div>
-  
+  </div>
+  </div>
    <div class="form-group text-center">
   
   </div>
   
     <div class="form-group">
-        <label for="imageInput">File input</label>
+        <label for="imageInput">Profile Image</label>
         <input  name="input_img" type="file" id="imageInput">
         <img class="col-sm-6" id="preview"  src="">
     </div>
    
-   <div class="form-group">
-        <label for="signatureinput">Signature input</label>
+   <div class="form-group ">
+        <label for="signatureinput">Signature</label>
         <input  name="input_signature" type="file" >
         <img class="col-sm-6" id="preview"  src="">
     </div>

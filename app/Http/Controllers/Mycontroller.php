@@ -6,6 +6,8 @@ use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
+use DateTime;
+use Session;
 class Mycontroller extends Controller
 {
     /**
@@ -87,7 +89,7 @@ class Mycontroller extends Controller
     }
     public function employee_form_submit(Request $request){
         $employee_code = $request->input('employee_code');
-
+        $employee_email = $request->input('employee_email');
         $employee_name = $request->input('employee_name');
         $designation =$request->input('designation');
         $department = $request->input('department');
@@ -127,6 +129,7 @@ class Mycontroller extends Controller
         DB::table('employees')->insert(
             ['employee_code' => $employee_code,
             'employee_name' => $employee_name,
+            'employee_email' => $employee_email,
             'designation' => $designation,
             'department' => $department,
             'line_manager_id' => $line_manager_id,
@@ -135,6 +138,7 @@ class Mycontroller extends Controller
             ]);
         echo 'Inserted';
     }
+
     public function designation_form_submit(Request $request){
         $designation = $request->input('designation');
         
@@ -144,12 +148,28 @@ class Mycontroller extends Controller
             ]);
         echo 'Inserted';
     }
-        public function leave_form_submit(Request $request){
-         $catagory = $request->input('catagory');
         
+    public function leave_form_submit(Request $request){
+			
+           
+         $catagory = $request->input('catagory');
+		 $leave_type = $request->input('leave_type');
+		 $employee = $request->input('employee_name');
+		 $start_date = date('Y-m-d',strtotime($request->input('fromdate')));
+		 $end_date = date('Y-m-d',strtotime($request->input('todate')));
+		 $leave_applied = $request->input('numberdays');
+		 $reason = $request->input('reason');
+		 $remarks = $request->input('remarks');
+		 
         DB::table('leave_table')->insert(
-            ['catagory' => $catagory
-            
+            ['catagory' => $catagory,
+			'leave_type'=>$leave_type,
+			'employee'=>$employee,
+			'start_date'=>$start_date,
+			'end_date'=>$end_date,
+			'leave_applied'=>$leave_applied,
+			'reason'=>$reason,
+			'remarks'=>$remarks             
             ]);
         echo 'Inserted';
     }
@@ -170,15 +190,30 @@ class Mycontroller extends Controller
         return view('employee_view_form',['employee'=>$users]);
     }
      public function login_form_submit(Request $request){
-        $employee_code = $request->input('employee_code');
+        $employee_email = $request->input('employee_email');
         $password = $request->input('password');
 
+        
+
         $employee = DB::table('employees')
-                ->select('employee_name','designation','department','line_manager_id')
-                ->where('employee_code', $employee_code)
+                ->select('employee_name','designation','department','line_manager_id','employee_email')
+                ->where('employee_email', $employee_email)
                 ->where('password', $password)
                 ->get();
         if(count($employee) > 0){
+
+            Session::put('employee_name', $employee[0]->employee_name);
+            Session::put('designation', $employee[0]->designation);
+            Session::put('department', $employee[0]->department);
+            Session::put('line_manager_id', $employee[0]->line_manager_id);
+            Session::put('employee_email', $employee[0]->employee_email);
+
+            //$request->session()->flush();
+
+            if ($request->session()->has('employee_name')) {
+                echo  Session::get('employee_name', $employee[0]->employee_name);
+            }
+            //exit;
             return view('dashboard');
         }
         else{
@@ -219,6 +254,10 @@ class Mycontroller extends Controller
             Storage::disk('local')->put('images/1/smalls'.'/'.$fileName, $img, 'public');
 }*/
    
+    }
+    public function logout(Request $request){
+        $request->session()->flush();
+       return view('dashboard');
     }
 
     public function store(Request $request)

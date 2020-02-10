@@ -8,6 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    public function setEntryDateAttribute($input)
+{
+    $this->attributes['entry_date'] = 
+      Carbon::createFromFormat(config('app.date_format'), $input)->format('Y-m-d');
+}
     use Notifiable;
 
     /**

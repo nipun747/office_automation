@@ -1,9 +1,12 @@
+
+
 @extends('layouts.app')
 @section('content')
 
     <link href="{{asset('assets/css/plugins/datapicker/datepicker3.css')}}" rel="stylesheet">
 
 <form action="{{url('/leave_form_submit')}}" method="post">
+
 	@csrf
 <h3>Leave form</h3>
 <div class="row">
@@ -58,8 +61,14 @@
                             </div>
 	</div>  
 </div>
-
-
+<div>
+<label>Reason:</label>
+<input type="text" name="reason">
+</div>
+<div>
+<label>Remarks:</label>
+<input type="text" name="remarks">
+</div>
   <button type="submit" class="btn btn-primary">Submit</button>
   
 </form>
@@ -76,9 +85,11 @@
     <script src="{{asset('assets/js/plugins/daterangepicker/daterangepicker.js')}}"></script>
 
     
+    	
 
     <script>
-        $(document).ready(function(){            
+        $(document).ready(function(){    
+                
 
             var mem = $('#data_1 .input-group.date').datepicker({
                 todayBtn: "linked",
@@ -92,9 +103,11 @@
             yearsAgo.setFullYear(yearsAgo.getFullYear() - 20);
         });
 </script>
-<script type="text/javascript">
 
+
+<script type="text/javascript">
 $(function() {
+	
 	let $fromDate = $('#fromdate'),
 		$toDate = $('#todate'),
 		$numberDays = $('#numberdays');

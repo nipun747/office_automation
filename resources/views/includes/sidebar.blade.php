@@ -27,7 +27,7 @@
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
                         <li><a href="{{url('department_form')}}">Department</a></li>
                         <li><a href="{{url('designation_form')}}">Designation</a></li>
-                         <li><a href="{{url('login')}}">login</a></li>
+                         @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
                            <li><a href="{{url('leave_form')}}">Leave form</a></li>
                         
                     </ul>
@@ -54,7 +54,9 @@
         </div>
             <ul class="nav navbar-top-links navbar-right">
                 <li>
-                    <span class="m-r-sm text-muted welcome-message">Welcome to INSPINIA+ Admin Theme.</span>
+                    <span class="m-r-sm text-muted welcome-message">
+                        @if(session()->has('employee_name')) 
+                     {{ Session::get('employee_name') }}@endif</span>
                 </li>
                 <li class="dropdown">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -152,12 +154,15 @@
                     </ul>
                 </li>
 
+                @if(session()->has('employee_name')) 
+                      <li>
+                        <a href="{{url('logout')}}">
+                            <i class="fa fa-sign-out"></i> Log out
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="login.html">
-                        <i class="fa fa-sign-out"></i> Log out
-                    </a>
-                </li>
+                @endif
+               
                 
             </ul>
 
