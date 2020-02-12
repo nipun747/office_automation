@@ -32,3 +32,8 @@ Route::get('/employee_view_form','Mycontroller@employee_view_form');
 
 Route::get('/leave_view_form','Mycontroller@leave_view_form');
 Route::get('leave_show','Mycontroller@leave_show');
+Route::get('viewAssignedDuty','employeeController@viewAssignedDuty');
+Route::get('accRejectDuty','employeeController@accRejectDuty');
+Route::get('viewPendingLeave','employeeController@viewPendingLeave');
+Route::get('lineleave_view_form','MyController@lineleave_view_form');
+Route::get('lineacceptRejectDuty','employeeController@lineacceptRejectDuty');

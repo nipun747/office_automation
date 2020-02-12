@@ -77,11 +77,18 @@ class Mycontroller extends Controller
     }
  public function leave_view_form(){
                $catagory=DB::table('leave_table')
-                      ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','employee','employees.employee_name')
-                      ->join('employees', 'employees.employee_id', '=', 'leave_table.employee')
+                      ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name')
+                      ->join('employees', 'employees.employee_id', '=', 'leave_table.duty_assigned_to')
                        ->get();
               return view('leave_view_form',['catagory'=>$catagory]);
      }
+     public function lineleave_view_form(){
+               $lineDuty=DB::table('leave_table')
+                      ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name')
+                      ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                       ->get();
+              return view('employees.lineleave_view_form',['lineDuty'=>$lineDuty]);
+          }
 
     public function employee_view_form()
     { 
@@ -216,7 +223,12 @@ class Mycontroller extends Controller
         echo 'Inserted';
     }
     public function leave_show()
-    {
+
+    {$employee_name = DB::table('leave_table')
+                            ->select('leave_categories.*')
+                            ->where('status',1)
+                            ->get();
+
         return view('leave_show');
     }
     public function department_form_submit(Request $request){
