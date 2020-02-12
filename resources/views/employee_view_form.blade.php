@@ -54,5 +54,38 @@ table#t01 {
   </tr>
   @endforeach
 </table>
+ <h2>Leave</h2>
+
+<table style="width:100%">
+   <tr>
   
+    <th>Leave Type</th>
+    <th>Duty Assign to</th>
+    
+     <th>Hour of leave</th>
+    
+    <th>Start Date</th>
+    <th>End Days</th>
+    <th>Leave Applied</th>
+    <th>Reason</th>
+    <th>Remarks</th>
+     
+  </tr>
+
+  @foreach($catagory as $catagory)
+  <tr>
+    <td>{{$catagory->catagory}}</td>
+   
+    <td>{{$catagory->employee}}</td>
+     <td>{{$catagory->leave_type}}</td>
+
+    <td>{{$catagory->start_date}}</td>
+    <td>{{$catagory->end_date}}</td>
+    <td>{{$catagory->leave_applied}}</td>
+    <td>{{$catagory->reason}}</td>
+    <td>{{$catagory->remarks}}</td>
+     
+  </tr>
+  @endforeach
+</table>  
 @endsection

@@ -24,9 +24,11 @@ Route::post('/department_form_submit','Mycontroller@department_form_submit');
 Route::get('/employee_view_form','Mycontroller@employee_view_form');
 Route::get('/login','Mycontroller@login');
 Route::get('leave_form','Mycontroller@leave_form');
+Route::post('leave_form_submit','Mycontroller@leave_form_submit');
 Route::post('/login_form_submit','Mycontroller@login_form_submit');
 Route::post('fileupload','Mycontroller@fileupload');
 Route::get('/logout','Mycontroller@logout');
+Route::get('/employee_view_form','Mycontroller@employee_view_form');
 
-Route::post('leave_form_submit','Mycontroller@leave_form_submit');
-
+Route::get('/leave_view_form','Mycontroller@leave_view_form');
+Route::get('leave_show','Mycontroller@leave_show');

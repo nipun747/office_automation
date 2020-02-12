@@ -65,10 +65,25 @@
   </div>
   </div>
   </div>
-   <div class="form-group text-center">
-  
+   <div class="form-group">
+  <div class="col-lg-12 row">
+  <div class="col-lg-6">
+  <div class="form-group">
+    <label for="password">Password:</label>   
+    <input type="text" name="password" class="form-control">
   </div>
-  
+  </div>
+</div>
+<div class="form-group">
+  <div class="col-lg-12 row">
+  <div class="col-lg-6">
+  <div class="form-group">
+   <input type="checkbox" name="is_line_manager" value="1">Is Line Manager<br>
+  </div>
+  </div>
+</div>
+</div>
+   
     <div class="form-group">
         <label for="imageInput">Profile Image</label>
         <input  name="input_img" type="file" id="imageInput">

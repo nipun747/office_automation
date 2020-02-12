@@ -12,16 +12,16 @@
 <div class="row">
 		<div class="col-2 form-group has-feedback">
 			<label>Leave Type</label>
- <select name="leave" class="form-control">
+ <select name="catagory" class="form-control">
   @foreach($catagories as $catagory)
-  <option value = "{{$catagory->leave_id}}">{{$catagory->catagory}}</option>
+  <option value = "{{$catagory->leave_category_id}}">{{$catagory->leave_category}}</option>
   @endforeach
   </select><br>
 </div>
 		<div class="col-2 form-group has-feedback">
 <label>Choose a value:</label>
 
-<select name="leave_type" >
+<select name="leave_type" class="form-control">
   <option >Full Day Leave</option>
   <option >Half Day Leave</option>
  </select>
@@ -39,35 +39,41 @@
 	<div class="row">
 		<div class="col-2 form-group has-feedback">
 			<label>Start Date <span class="text-danger">*</span></label>
-			<input type="text" class="form-control has-feedback-left" id="fromdate" 
+			 <div class="input-group date">
+			<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control has-feedback-left" id="fromdate" 
 				   placeholder="YYYY-MM-DD" name="fromdate">
+				</div>
 		</div>
 		<div class="col-2 form-group has-feedback">
 			<label>End Date: <span class="text-danger">*</span></label>
-			<input type="text" class="form-control has-feedback-left" id="todate" 
+			 <div class="input-group date">
+			<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control has-feedback-left" id="todate" 
 				   placeholder="YYYY-MM-DD" name="todate">
+				</div>
 		</div>
 		<div class="col-2 form-group has-feedback">
 			<label>Leave Applied(days): <span class="text-danger">*</span></label>
-			<input type="text" class="form-control has-feedback-left" name="numberdays" 
-				   id="numberdays" disabled>
+			<div class="input-group date">
+			<input type="text" readonly class="form-control has-feedback-left" name="numberofdays" 
+				   id="numberdays" >
+				</div>
 		</div>
 
 		<div class="form-group" id="data_1">
-                                <label class="font-normal">Simple data input format</label>
-                                <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
-                                </div>
-                            </div>
+            <label class="font-normal">Simple data input format</label>
+            <div class="input-group date">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
+            </div>
+        </div>
 	</div>  
 </div>
 <div>
 <label>Reason:</label>
-<input type="text" name="reason">
+<input class="form-control" type="text" name="reason">
 </div>
 <div>
 <label>Remarks:</label>
-<input type="text" name="remarks">
+<input class="form-control" type="text" name="remarks">
 </div>
   <button type="submit" class="btn btn-primary">Submit</button>
   

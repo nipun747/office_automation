@@ -64,8 +64,8 @@ class Mycontroller extends Controller
     }
     public function leave_form()
     {
-        $catagories = DB::table('leave_table')
-                            ->select('leave_table.*')
+        $catagories = DB::table('leave_categories')
+                            ->select('leave_categories.*')
                             ->where('status',1)
                             ->get();
      $employee_names = DB::table('employees')
@@ -75,31 +75,65 @@ class Mycontroller extends Controller
         
         return view('leave_form',['catagories'=>$catagories,'employee_names'=>$employee_names]);
     }
+ public function leave_view_form(){
+               $catagory=DB::table('leave_table')
+                      ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','employee','employees.employee_name')
+                      ->join('employees', 'employees.employee_id', '=', 'leave_table.employee')
+                       ->get();
+              return view('leave_view_form',['catagory'=>$catagory]);
+     }
+
     public function employee_view_form()
     { 
         $employee = DB::table('employees')
                 ->select('employee_name','designation','department','line_manager_id')
                 ->get();
-                $designation = DB::table('designation_table')
+       $designation = DB::table('designation_table')
                 ->select('designation')
                 ->get();
+        $catagory=DB::table('leave_table')
+              ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','employee')
+               ->join('employees', 'employees.employee_id', '=', 'leave_table.employee')
+              ->get();
+              // dd($catagory);
 
-        return view('employee_view_form',['employee'=>$employee,'designation'=>$designation]);
+        return view('employee_view_form',['employee'=>$employee,'designation'=>$designation,'catagory'=>$catagory]);
        
     }
     public function employee_form_submit(Request $request){
+
+
         $employee_code = $request->input('employee_code');
         $employee_email = $request->input('employee_email');
         $employee_name = $request->input('employee_name');
         $designation =$request->input('designation');
         $department = $request->input('department');
         $line_manager_id = $request->input('line_manager_id');
+        $password = $request->input('password');
+        $is_line_manager = $request->input('is_line_manager');
+
+
+
+    try {
         $this->validate($request, [
             'input_img' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+    }
+    catch (\Illuminate\Validation\ValidationException $e){
+         echo "input_img not valid";exit;
+    }
+
+    try {
         $this->validate($request, [
             'input_signature' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+    }
+    catch (\Illuminate\Validation\ValidationException $e){
+         echo "input_signature not valid";exit;
+    }
+
+
+
 
              if ( $request->hasFile('input_img')){
                 if ($request->file('input_img')->isValid()){
@@ -108,10 +142,11 @@ class Mycontroller extends Controller
                     $file->move('images' , $name);
                     $inputs = $request->all();
                     $inputs['path'] = $name;
-
-                    
-                
-                }}
+                }
+                else{
+                   
+                }
+            }
 
              if ( $request->hasFile('input_signature')){
                 if ($request->file('input_signature')->isValid()){
@@ -125,6 +160,8 @@ class Mycontroller extends Controller
                 
                 }
             }
+
+
         
         DB::table('employees')->insert(
             ['employee_code' => $employee_code,
@@ -134,7 +171,9 @@ class Mycontroller extends Controller
             'department' => $department,
             'line_manager_id' => $line_manager_id,
             'profile_image' => $name,
-            'signature' => $signature
+            'signature' => $signature,
+            'password' => $password,
+            'is_line_manager' => $is_line_manager
             ]);
         echo 'Inserted';
     }
@@ -151,27 +190,34 @@ class Mycontroller extends Controller
         
     public function leave_form_submit(Request $request){
 			
-           
+        $employee_id=session()->get('employee_id');
          $catagory = $request->input('catagory');
 		 $leave_type = $request->input('leave_type');
 		 $employee = $request->input('employee_name');
 		 $start_date = date('Y-m-d',strtotime($request->input('fromdate')));
 		 $end_date = date('Y-m-d',strtotime($request->input('todate')));
-		 $leave_applied = $request->input('numberdays');
+		 $leave_applied = $request->input('numberofdays');
 		 $reason = $request->input('reason');
 		 $remarks = $request->input('remarks');
-		 
+		 $catagory = $request->input('catagory');
+         
         DB::table('leave_table')->insert(
             ['catagory' => $catagory,
 			'leave_type'=>$leave_type,
-			'employee'=>$employee,
+			'duty_assigned_to'=>$employee,
 			'start_date'=>$start_date,
 			'end_date'=>$end_date,
 			'leave_applied'=>$leave_applied,
 			'reason'=>$reason,
-			'remarks'=>$remarks             
+			'remarks'=>$remarks,  
+            'status'=>1   ,
+            'employee_id'=>$employee_id        
             ]);
         echo 'Inserted';
+    }
+    public function leave_show()
+    {
+        return view('leave_show');
     }
     public function department_form_submit(Request $request){
         $department = $request->input('department');
@@ -196,7 +242,7 @@ class Mycontroller extends Controller
         
 
         $employee = DB::table('employees')
-                ->select('employee_name','designation','department','line_manager_id','employee_email')
+                ->select('employee_id','employee_name','designation','department','line_manager_id','employee_email')
                 ->where('employee_email', $employee_email)
                 ->where('password', $password)
                 ->get();
@@ -207,6 +253,7 @@ class Mycontroller extends Controller
             Session::put('department', $employee[0]->department);
             Session::put('line_manager_id', $employee[0]->line_manager_id);
             Session::put('employee_email', $employee[0]->employee_email);
+            Session::put('employee_id', $employee[0]->employee_id);
 
             //$request->session()->flush();
 
