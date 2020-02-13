@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+<a href="{{url('employee_view_form/pdf')}}">Convert into PDF</a>
 <style>
 table, th, td {
   border: 1px solid black;
@@ -76,7 +77,7 @@ table#t01 {
   <tr>
     <td>{{$catagory->catagory}}</td>
    
-    <td>{{$catagory->employee}}</td>
+    <td>{{$catagory->duty_assigned_to}}</td>
      <td>{{$catagory->leave_type}}</td>
 
     <td>{{$catagory->start_date}}</td>
@@ -88,4 +89,22 @@ table#t01 {
   </tr>
   @endforeach
 </table>  
+<table style="width:100%">
+   <tr>
+    <th>Employee Name</th>
+    <th>Designation</th>
+    <th>Department</th>
+    <th>Line Manager</th>
+      
+  </tr>
+
+  @foreach($customer_data as $employees)
+  <tr>
+  <td>{{$employees->employee_name}}</td>
+    <td>{{$employees->designation}}</td>
+    <td>{{$employees->department}}</td>
+    <td>{{$employees->line_manager_id}}</td>
+  </tr>
+  @endforeach
+</table>
 @endsection

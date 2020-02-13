@@ -30,6 +30,7 @@ i{
     <th>Leave Applied</th>
     <th>Reason</th>
     <th>Remarks</th>
+    <th>Leave Status</th>
     <th>Action</th>
      
   </tr>
@@ -46,13 +47,12 @@ i{
     <td>{{$catagory->leave_applied}}</td>
     <td>{{$catagory->reason}}</td>
     <td>{{$catagory->remarks}}</td>
+    <td>{{$catagory->leave_status}}</td>
     @if($catagory->status == 2)
-    <td class="action_td{{$catagory->leave_id}}"><a onclick="lineacceptReject_duty({{$catagory->leave_id}},2)"><i  class="fa fa-check"></i></a><a onclick="lineacceptReject_duty({{$catagory->leave_id}},1)"> <i class="fa fa-times"></i></a>
+    <td class="action_td{{$catagory->leave_id}}"><a onclick="lineacceptReject_duty({{$catagory->leave_id}},1)"><i  class="fa fa-check"></i></a><a onclick="lineacceptReject_duty({{$catagory->leave_id}},0)"> <i class="fa fa-times"></i></a>
     </td>
-    @elseif($catagory->status == 3)
-    <td><span class="label label-primary">Accepted</span></td>
-     @else($catagory->status == 5)
-    <td><span class="label label-danger">Rejected</span></td>
+    @else
+    <td>{{$catagory->next_status}}</td>
     @endif
   </tr>
   @endforeach
@@ -63,7 +63,7 @@ i{
   function lineacceptReject_duty(leave_id,status){    
   
     $.ajax({
-      url: "{{url('/lineacceptRejectDuty')}}",
+      url: "{{url('/lineacceptReject_Duty')}}",
       type: 'GET',
       data: {leave_id:leave_id,status:status},
       success: function(response) {

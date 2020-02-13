@@ -38,10 +38,11 @@ class employeeController extends Controller
    {
    	$line_id = session()->get('employee_id');
    	$lineDuty=DB::table('leave_table')
-                      ->select('leave_table.status','leave_table.leave_id','leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name','leave_categories.leave_category')
+                      ->select('leave_table.status','leave_table.leave_id','leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name','leave_categories.leave_category','leave_status_table.leave_status','leave_status_table.next_status')
                       ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
                       ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
-                      ->where('employees.is_line_manager',$line_id )
+                      ->join('leave_status_table','leave_table.status','=','leave_status_table.leave_status_id')
+                      ->where('employees.line_manager_id',$line_id )
                        ->get();
 
                         // dd($lineDuty[0]->status);
@@ -63,7 +64,36 @@ class employeeController extends Controller
 
    		return $update_status;
 	}
+public function hrviewLeave() 
+   {
+   	$line_id = session()->get('employee_id');
+   	$hrlineDuty=DB::table('leave_table')
+                      ->select('leave_table.status','leave_table.leave_id','leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name','leave_categories.leave_category','leave_status_table.leave_status','leave_status_table.next_status')
+                      ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
+                      ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
+                      ->join('leave_status_table','leave_table.status','=','leave_status_table.leave_status_id')
+                      ->where('employees.employee_id',$line_id )
+                       ->get();
 
+                        //dd($lineDuty[0]->status);
+              return view('leave_view_form',['hrlineDuty'=>$hrlineDuty]);
+              // return view('employees.lineleave_view_form',['lineDuty'=>$lineDuty]);
+   }
+    public function hrlineacceptRejectDuty(Request $request){
+   		
+   		$leave_id = $request->input('leave_id');
+   		$status = $request->input('status');
+   		if($status == 3){
+   			$update_status = 4;
+   		}else{
+   			$update_status = 5;
+   		}
+   		DB::table('leave_table')
+   				->where('leave_id',$leave_id)
+   				->update(['status'=>$update_status]);
+
+   		return $update_status;
+	}
 }
 
 

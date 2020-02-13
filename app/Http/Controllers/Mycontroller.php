@@ -76,11 +76,11 @@ class Mycontroller extends Controller
         return view('leave_form',['catagories'=>$catagories,'employee_names'=>$employee_names]);
     }
  public function leave_view_form(){
-               $catagory=DB::table('leave_table')
+              $hrlineDuty=DB::table('leave_table')
                       ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name')
-                      ->join('employees', 'employees.employee_id', '=', 'leave_table.duty_assigned_to')
+                      ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
                        ->get();
-              return view('leave_view_form',['catagory'=>$catagory]);
+              return view('leave_view_form',['hrlineDuty'=>$hrlineDuty]);
      }
      public function lineleave_view_form(){
                $lineDuty=DB::table('leave_table')
@@ -333,6 +333,29 @@ class Mycontroller extends Controller
   $request->user_photo->move(public_path('avatars'), $photoName);
 
   }
-  
+  public function leave()
+  {
+     $designations = DB::table('designation_table')
+                            ->select('designation_table.*')
+                            ->where('status',1)
+                            ->get();
+        $departments = DB::table('department_table')
+                            ->select('department_table.*')
+                            ->where('status',1)
+                            ->get();
+        $line_manager=DB::table('employees')
+                        ->select('employees.*')
+                        ->where('status',1)
+                        ->where('is_line_manager',1)
+                        ->get();
+        $catagories = DB::table('leave_categories')
+                            ->select('leave_categories.*')
+                            ->where('status',1)
+                            ->get();
+        return view('leave',
+            ['designations'=>  $designations,
+                'departments' => $departments,
+                'line_manager'=>$line_manager,'catagories'=>$catagories]);
+  }
 
 }
