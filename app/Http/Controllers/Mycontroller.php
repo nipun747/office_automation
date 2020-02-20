@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DB;
 use DateTime;
 use Session;
+use PDF;
 class Mycontroller extends Controller
 {
     /**
@@ -224,12 +225,10 @@ class Mycontroller extends Controller
     }
     public function leave_show()
 
-    {$employee_name = DB::table('leave_table')
-                            ->select('leave_categories.*')
-                            ->where('status',1)
-                            ->get();
-
-        return view('leave_show');
+    { $leave=DB::table('leave_details')
+            ->select('employee_id','employee_name','designation','department','line_manager','application_date','leave_category','line_manager','leave_applied')
+            ->get();
+              return view('leave_show',['leave'=>$leave]);
     }
     public function department_form_submit(Request $request){
         $department = $request->input('department');
@@ -352,10 +351,48 @@ class Mycontroller extends Controller
                             ->select('leave_categories.*')
                             ->where('status',1)
                             ->get();
+         $employee_names = DB::table('employees')
+                     ->select('employees.*')
+                            ->where('status',1)
+                            ->get();
         return view('leave',
             ['designations'=>  $designations,
                 'departments' => $departments,
-                'line_manager'=>$line_manager,'catagories'=>$catagories]);
+                'line_manager'=>$line_manager,'catagories'=>$catagories,'employee_names'=>$employee_names]);
   }
-
+ public function leave_submit(Request $request){
+            
+        $employee_id=session()->get('employee_id');
+        $employee_name=session()->get('employee_name');
+        $department=session()->get('department');
+        $designation=session()->get('designation');
+        $line_manager=session()->get('line_manager');
+         $leave_category = $request->input('leave_category');
+         $leave_type = $request->input('leave_type');
+        
+         $start_date = date('Y-m-d',strtotime($request->input('fromdate')));
+         $end_date = date('Y-m-d',strtotime($request->input('todate')));
+         $leave_applied = $request->input('numberofdays');
+         
+         $remarks = $request->input('remarks');
+        
+         
+        DB::table('leave_details')->insert(
+            ['employee_id'=>$employee_id,
+            'employee_name'=>$employee_name,
+            'department'=>$department,
+            'designation'=>$designation,    
+            'leave_category' => $leave_category,
+            'leave_type'=>$leave_type,
+            
+            'start_date'=>$start_date,
+            'end_date'=>$end_date,
+            'leave_applied'=>$leave_applied,
+          
+            'remarks'=>$remarks  
+             
+                   
+            ]);
+        echo 'Inserted';
+    }
 }

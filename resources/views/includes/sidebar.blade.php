@@ -26,6 +26,7 @@
                     <ul class="nav nav-second-level">
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
                         <li><a href="{{url('department_form')}}">Department</a></li>
+                         <li><a href="{{url('leave')}}">Leave</a></li>
                         <li><a href="{{url('designation_form')}}">Designation</a></li>
                          @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
                            <li><a href="{{url('leave_form')}}">Leave form</a></li>

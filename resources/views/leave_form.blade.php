@@ -51,12 +51,12 @@
 				   placeholder="YYYY-MM-DD" name="todate">
 				</div>
 		</div>
-		<div class="col-2 form-group has-feedback">
-			<label>Leave Applied(days): <span class="text-danger">*</span></label>
-			<div class="input-group date">
-			<input type="text" readonly class="form-control has-feedback-left" name="numberofdays" 
-				   id="numberdays" >
-				</div>
+		 <div class="col-2 form-group has-feedback">
+		 <label>Leave Applied(days): <span class="text-danger">*</span></label> 
+			 <div class="input-group date"> 
+			 <input type="text" readonly class="form-control has-feedback-left" name="numberofdays"  
+				    id="numberdays" > 
+				 </div> 
 		</div>
 
 		<div class="form-group" id="data_1">

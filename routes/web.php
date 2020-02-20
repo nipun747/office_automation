@@ -41,5 +41,9 @@ Route::get('hrlineacceptRejectDuty','employeeController@hrlineacceptRejectDuty')
 Route::get('hrviewLeave','employeeController@hrviewLeave');
 Route::get('index','DynamicPDFController@index');
 Route::get('/employee_view_form/pdf','DynamicPDFController@pdf');
+Route::get('leave_show/pdf','DynamicPDFController@pdf');
 Route::get('/employee_view_form_pdf','DynamicPDFController@index');
+Route::get('/leave_show','DynamicPDFController@index');
+
 Route::get('leave','Mycontroller@leave');
+Route::post('/leave_submit','Mycontroller@leave_submit');
