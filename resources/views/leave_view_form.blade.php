@@ -67,7 +67,7 @@ i{
       type: 'GET',
       data: {leave_id:leave_id,status:status},
       success: function(response) {
-            if(response == 3){
+            if(response == 4){
               $('.action_td'+leave_id).html('');
               $('.action_td'+leave_id).html('<span class="label label-primary">Accepted</span>');
             }else if(response == 5){

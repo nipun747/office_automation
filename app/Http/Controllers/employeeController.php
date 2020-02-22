@@ -53,7 +53,7 @@ class employeeController extends Controller
    		
    		$leave_id = $request->input('leave_id');
    		$status = $request->input('status');
-   		if($status == 2){
+   		if($status == 1){
    			$update_status = 3;
    		}else{
    			$update_status = 5;
@@ -72,7 +72,7 @@ public function hrviewLeave()
                       ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
                       ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
                       ->join('leave_status_table','leave_table.status','=','leave_status_table.leave_status_id')
-                      ->where('employees.employee_id',$line_id )
+                      // ->where('employees.employee_id',$line_id )
                        ->get();
 
                         //dd($lineDuty[0]->status);
@@ -83,7 +83,7 @@ public function hrviewLeave()
    		
    		$leave_id = $request->input('leave_id');
    		$status = $request->input('status');
-   		if($status == 3){
+   		if($status == 1){
    			$update_status = 4;
    		}else{
    			$update_status = 5;

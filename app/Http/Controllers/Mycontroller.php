@@ -395,4 +395,42 @@ class Mycontroller extends Controller
             ]);
         echo 'Inserted';
     }
-}
+    public function conveyance()
+    {
+        return view('conveyance');
+     
+    }
+    public function index()
+    {
+         $pdf = PDF::loadView('conveyance');
+           return $pdf->download('conveyance.pdf');
+    }
+
+     public function view_pdf()
+    {
+
+     $pdf = PDF::loadView('view');
+           return $pdf->download('view.pdf');
+        //return view('view');
+    }
+    public function view()
+    {
+        return view('view');
+    }
+//     public function index()
+//     {
+       
+//        $pdf = PDF::loadView('view');
+//            return $pdf->download('view.pdf');
+//     }
+     public function debit()
+    {
+         return view('debit');
+    }
+      public function debit_pdf()
+      {
+        $pdf = PDF::loadView('debit');
+           return $pdf->download('debit.pdf');
+
+      }
+ }

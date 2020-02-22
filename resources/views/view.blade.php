@@ -1,14 +1,15 @@
-@extends('layouts.app')
-@section('content')
-<a href="{{url('view/pdf')}}">Convert into PDF</a>
+<html>
+
+<a href="{{url('view_pdf')}}">Convert into PDF</a>
  <style>
 table, th, td {
   border: 2px solid black;
+   border-collapse:collapse;
 }
 </style> 
 
 <body>
-  <h3>Leave Application Form</h3>
+  <h3 style="text-align: center;">Leave Application Form</h3>
 
 <table style="width:100%">
   <tr>
@@ -66,8 +67,8 @@ Remarks
   <tr>
     <th>Final Clearance</th>
     <td colspan="8"></td>
-    
+    </tr>
   
 </table>
 </body>
-@endsection
+</html>

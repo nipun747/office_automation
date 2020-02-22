@@ -29,6 +29,7 @@ class DynamicPDFController extends Controller
     	// return view('employee_view_form',['employee'=>$employee,'designation'=>$designation,'catagory'=>$catagory,'customer_data'=>$customer_data],'leave_show',['leave'=>$leave,'leave_details'=>$leave_details]);
       return view('leave_show',['leave'=>$leave,'leave_details'=>$leave_details]);
     }
+    
     function get_leave_details()
     {
       $leave_details=DB::table('leave_details')
@@ -50,7 +51,8 @@ class DynamicPDFController extends Controller
       $pdf->loadHTML($this->convert_leave_details_to_html());
       ($pdf);
       return  $pdf->stream();     
-$pdf = PDF::loadView('leave_show');
+//$pdf = PDF::loadView('leave_show');
+//$pdf = PDF::loadView('view');
       // $pdf = PDF::loadView('pdf_test');
     return $pdf->download('leave.pdf');
     }

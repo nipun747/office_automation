@@ -27,6 +27,13 @@
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
                         <li><a href="{{url('department_form')}}">Department</a></li>
                          <li><a href="{{url('leave')}}">Leave</a></li>
+                           <li><a href="{{url('hrviewLeave')}}">HR view leave</a></li>
+                          <li><a href="{{url('viewPendingLeave')}}">Line Manager View Leave</a></li>
+                          <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave</a></li>
+
+                          <li><a href="{{url('view')}}">Leave view pdf</a></li>
+                           <li><a href="{{url('conveyance')}}">conveyance pdf</a></li>
+                            <li><a href="{{url('debit')}}">debit pdf</a></li>
                         <li><a href="{{url('designation_form')}}">Designation</a></li>
                          @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
                            <li><a href="{{url('leave_form')}}">Leave form</a></li>
