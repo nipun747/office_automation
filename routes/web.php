@@ -44,6 +44,8 @@ Route::get('/employee_view_form/pdf','DynamicPDFController@pdf');
 Route::get('leave_show/pdf','DynamicPDFController@pdf');
 Route::get('/employee_view_form_pdf','DynamicPDFController@index');
 Route::get('/leave_show','DynamicPDFController@index');
+Route::get('view/pdf','DynamicPDFController@pdf');
 
 Route::get('leave','Mycontroller@leave');
 Route::post('/leave_submit','Mycontroller@leave_submit');
+Route::get('view','Mycontroller@view');

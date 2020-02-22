@@ -12,19 +12,31 @@
 </div>
 <div class="col-lg-12 row">
       
-      <div class="col-lg-6">
-        <div class="form-group">
-        <label for="employee_id">Employee Id:</label>
-        <input type="text" name="employee_id" class="form-control">
-        </div>
-      </div>
+      
       <div class="col-lg-6">
         <div class="form-group">
         <label for="employee_name">Employee Name:</label>
         <input type="text" name="employee_name" class="form-control">
         </div>
       </div>
+       <div class="col-lg-6">
+       <div class="form-group">
+    
+      <label>Application Date <span class="text-danger">*</span></label>
+       <div class="input-group date">
+      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control has-feedback-left" id="fromdate" 
+           placeholder="YYYY-MM-DD" name="fromdate">
+        </div>
+    </div>
+   
+  </div>
       <div class="col-lg-12 row">
+        <div class="col-lg-6">
+        <div class="form-group">
+        <label for="employee_id">Employee Id:</label>
+        <input type="text" name="employee_id" class="form-control">
+        </div>
+      </div>
       <div class="col-lg-6">
         <div class="form-group">
           <label for="designation">Designation:</label>    
@@ -35,6 +47,7 @@
           </select>   
         </div>
       </div>
+       <div class="col-lg-12 row">
       <div class="col-lg-6">
         <div class="form-group">
           <label for="department">Department:</label>    
@@ -45,7 +58,17 @@
           </select>   
         </div>
       </div>
+ <div class="col-lg-6">
+  <div class="form-group">
+    <label for="line_manager">Line Manager:</label>   
+     <select name="line_manager_id" class="form-control">
+      @foreach($line_manager as $line_managers)
+      <option value="{{$line_managers->employee_id}}">{{$line_managers->employee_name}}</option>
+      @endforeach  
+    </select>
   </div>
+  </div>
+</div>
   <!--  <div class="col-lg-12 row">
      <div class="form-group">
     
@@ -56,32 +79,14 @@
         </div>
     </div> -->
    
- <div class="col-lg-12 row">
-  <div class="col-lg-6">
-  <div class="form-group">
-    <label for="line_manager">Line Manager:</label>   
-     <select name="line_manager_id" class="form-control">
-      @foreach($line_manager as $line_managers)
-      <option value="{{$line_managers->employee_id}}">{{$line_managers->employee_name}}</option>
-      @endforeach  
-    </select>
-  </div>
-  </div>
+ 
 
-     <div class="form-group">
     
-      <label>Application Date <span class="text-danger">*</span></label>
-       <div class="input-group date">
-      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control has-feedback-left" id="fromdate" 
-           placeholder="YYYY-MM-DD" name="fromdate">
-        </div>
-    </div>
-   
-  </div>
   
-  <p align="center">Leave Category</p>
+  
 
   <div class="col-lg-12 row">
+    <div class="text-center col-lg-12"><h3>Leave Category</h3></div>
   <div class="col-lg-6">
   <div class="form-group"> 
       <label>Leave Type</label>
@@ -104,16 +109,18 @@
 </div>
 </div>
 </div>
-<div>
+ <div class="col-lg-12">
 <label>Remarks:</label>
 <input class="form-control" type="text" name="remarks">
 </div>
 <div>
-<p>Leave Application Details</p>
+
    </div>
-   <div class="col-lg-12 row">
-  <div class="col-lg-6">
-  <div class="form-group">
+    <div class="container">
+  <div class="row">
+    <div class="text-center col-lg-12"><h3>Leave Application Details</h3></div>
+ 
+    <div class="col-4 form-group has-feedback">
    
       <label>Start Date <span class="text-danger">*</span></label>
        <div class="input-group date">
@@ -121,20 +128,17 @@
            placeholder="YYYY-MM-DD" name="fromdate">
         </div>
     </div>
-  </div>
-</div>
-     <div class="col-lg-6">
-  <div class="form-group">
+  
+
+   <div class="col-4 form-group has-feedback">
       <label>End Date: <span class="text-danger">*</span></label>
        <div class="input-group date">
       <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control has-feedback-left" id="todate" 
            placeholder="YYYY-MM-DD" name="todate">
         </div>
-    </div>
   </div>
-   <div class="col-lg-12 row">
-  <div class="col-lg-6">
-  <div class="form-group">
+  
+  <div class="col-4 form-group has-feedback">
       <label>Leave Applied(days): <span class="text-danger">*</span></label>
       <div class="input-group date">
       <input type="text" readonly class="form-control has-feedback-left" name="numberofdays" 
@@ -143,14 +147,17 @@
     </div>
  </div>
 </div>
+
+
 <div class="col-lg-12 row">
-  <div class="col-lg-6">
+
 <label>Reason:</label>
 <input class="form-control" type="text" name="reason">
 </div>
 </div>
-<h3>Approval Section</h3>
+
  <div class="col-lg-12 row">
+  <div class="text-center col-lg-12"><h3>Approval Section</h3></div>
   <div class="col-lg-6">
   <div class="form-group">
   <label>Duty Assign to</label>
@@ -183,7 +190,7 @@
   </div>
   </div>
   <div class="col-lg-6">
-  <div class="form-group">
+
 <div class="form-group">
         <label for="imageInput">Signature</label>
         <input  name="input_img" type="file" id="imageInput">
@@ -193,31 +200,29 @@
 </div>
   </div>
   <div class="col-lg-6">
+    <div class="form-group">
 <label>Final Clearance:</label>
 <input class="form-control" type="text" name="reason">
 </div><br>
-
-  <div class="col-lg-12 row">
-  <div class="col-lg-6">
-  <div class="form-group">
-   <input type="checkbox" name="declaration" value="1">Declaration:I acknowledge that I have followed Leave Management process and during my absesce,my assigned task is taken care off by mentioned assigned person (Duty Assigned to)<br>
-  </div>
-  </div>
 </div>
-</div>
+  <div class="col-lg-12">
 
-<div class="col-lg-6">
-  <div class="form-group">
+    <div class="form-group">
+   <input type="checkbox" name="declaration" value="1"><b>Declaration</b>:I acknowledge that I have followed Leave Management process and during my absesce,my assigned task is taken care off by mentioned assigned person (Duty Assigned to)
+</div><br>
+
+</div>
+<div class="col-lg-12">
 <div class="form-group">
         <label for="imageInput">Applicant Signature</label>
         <input  name="input_img" type="file" id="imageInput">
         <img class="col-sm-6" id="preview"  src="">
     </div>
   </div>
-</div>
-</div>
-<h3>HRD Section</h3>
+
+
  <div class="col-lg-12 row">
+   <div class="text-center col-lg-12"><h3>HRD Section</h3></div>
   <div class="col-lg-6">
   <div class="form-group"> 
       <label>Leave Type</label>
@@ -228,11 +233,26 @@
   </select><br>
 </div>
 </div>
-<div>
+<div class="col-lg-6">
+  <div class="form-group"> 
 <label>Opening Balance:</label>
 <input class="form-control" type="text" name="opening_balance">
 </div>
+</div>
+</div>
+
  <div class="col-lg-12 row">
+
+  <div class="col-lg-6">
+     <div class="form-group">
+    
+      <label>Applied Leaves: <span class="text-danger">*</span></label>
+       <div class="input-group date">
+      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control has-feedback-left" id="fromdate" 
+           placeholder="YYYY-MM-DD" name="fromdate">
+        </div>
+    </div>
+  </div>
   <div class="col-lg-6">
   <div class="form-group">
       <label>Remaining Days: <span class="text-danger">*</span></label>
@@ -243,21 +263,13 @@
     </div>
  </div>
 </div>
-<div class="col-lg-12 row">
-     <div class="form-group">
-    
-      <label>Applied Leaves: <span class="text-danger">*</span></label>
-       <div class="input-group date">
-      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control has-feedback-left" id="fromdate" 
-           placeholder="YYYY-MM-DD" name="fromdate">
-        </div>
-    </div>
-    <div class="col-lg-12 row">
-  <div class="col-lg-6">
+
+    <div class="col-lg-12">
+  
 <label>Remarks:</label>
 <input class="form-control" type="text" name="remarks">
 </div>
-</div>
+
  <div class="col-lg-6">
   <div class="form-group">
 <div class="form-group">
