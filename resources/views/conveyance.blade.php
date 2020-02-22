@@ -25,29 +25,35 @@ table, th, td {
   <th colspan="4" width="20%">Taka</th>
  
  </tr>
- <tr>
-  <td colspan="4" width="20%">1</td>
-  <td colspan="4" width="20%">2</td>
-  <td colspan="4" width="20%">3</td>
-  <td colspan="4" width="20%">4</td>
-  <td colspan="4" width="20%">5</td>
-   <td colspan="4" width="20%">6</td>
+ 
+   @foreach($employee as $employees)
+ 
+  <tr>
+  
+  <td colspan="4" width="20%">{{$employees->date}}</td>
+  <td colspan="4" width="20%">{{$employees->from}}</td>
+  <td colspan="4" width="20%">{{$employees->to}}</td>
+  <td colspan="4" width="20%">{{$employees->by}}</td>
+  <td colspan="4" width="20%">{{$employees->purpose}}</td>
+   <td colspan="4" width="20%">{{$employees->taka}}</td>
  </tr>
  
  <tr>
   <th style="text-align:right;" colspan="16" width="60%">Total taka=</th>
-  <td colspan="8" width="20%"></td>
+  <td colspan="8" width="20%">{{$employees->total}}</td>
  </tr>
  <tr>
-  <th style="text-align:left;" colspan="24" width="100%">Taka in Word:</th>
+  <th style="text-align:left;" colspan="16" width="100%">Taka in Word:</th>
+  <th style="text-align:left;" colspan="8" width="100%">{{$employees->word}}</th>
   
  </tr>
- 
+  @endforeach
  
 </table><br><br><br><br>
 <p><b><u>Received by</u></b></p><br><br>
   <p><b><u>Prepared by</u></b></p><br><br>
   <p><b><u>Checked by</u></b></p><br><br>
   <p><b><u>Approved by</u></b></p><br><br>
+
 </body>
 </html>

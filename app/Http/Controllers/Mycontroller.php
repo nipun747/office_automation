@@ -396,8 +396,22 @@ class Mycontroller extends Controller
         echo 'Inserted';
     }
     public function conveyance()
-    {
-        return view('conveyance');
+    {$employee = DB::table('conveyance')
+                ->select('name','date',
+         'from',
+          'to',
+           'by',
+            'purpose',
+             'taka',
+              'total',
+               'word',
+                'received_by',
+                 'prepared_by',
+                  'checked_by',
+                   'approved_by'
+            )
+                ->get();
+        return view('conveyance',['employee'=>$employee]);
      
     }
     public function index()
@@ -433,4 +447,45 @@ class Mycontroller extends Controller
            return $pdf->download('debit.pdf');
 
       }
+      public function debit_input()
+    {
+         return view('debit_input');
+    }
+    public function conveyance_input()
+    {
+         return view('conveyance_input');
+    }
+     public function conveyance_submit(Request $request){
+       $name = $request->input('name');
+        $date = $request->input('date');
+         $from = $request->input('from');
+          $to = $request->input('to');
+           $by = $request->input('by');
+            $purpose = $request->input('date');
+             $taka = $request->input('taka');
+              $total = $request->input('total');
+               $word = $request->input('word');
+                $received_by = $request->input('received_by');
+                 $prepared_by = $request->input('prepared_by');
+                  $checked_by = $request->input('checked_by');
+                   $approved_by = $request->input('approved_by');
+        DB::table('conveyance')->insert(
+            [
+            'name' => $name,
+        'date' => $date,
+         'from' => $from,
+          'to' => $to,
+           'by' => $by,
+            'purpose' => $date,
+             'taka'=> $taka,
+              'total' => $total,
+               'word' => $word,
+                'received_by' => $received_by,
+                 'prepared_by' => $prepared_by,
+                  'checked_by' => $checked_by,
+                   'approved_by' => $approved_by
+            
+            ]);
+        echo 'Inserted';
+    }
  }
