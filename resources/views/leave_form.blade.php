@@ -5,10 +5,13 @@
 
     <link href="{{asset('assets/css/plugins/datapicker/datepicker3.css')}}" rel="stylesheet">
 
+
+
 <form action="{{url('/leave_form_submit')}}" method="post">
 
 	@csrf
 <h3>Leave form</h3>
+<hr>
 <div class="row">
 		<div class="col-2 form-group has-feedback">
 			<label>Leave Type</label>
@@ -59,22 +62,18 @@
 				 </div> 
 		</div>
 
-		<div class="form-group" id="data_1">
-            <label class="font-normal">Simple data input format</label>
-            <div class="input-group date">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
-            </div>
-        </div>
+		
 	</div>  
 </div>
 <div>
 <label>Reason:</label>
-<input class="form-control" type="text" name="reason">
+<textarea class="form-control"  name="reason"></textarea> 
 </div>
 <div>
 <label>Remarks:</label>
-<input class="form-control" type="text" name="remarks">
+<textarea class="form-control" type="text" name="remarks"></textarea> 
 </div>
+<hr>
   <button type="submit" class="btn btn-primary">Submit</button>
   
 </form>

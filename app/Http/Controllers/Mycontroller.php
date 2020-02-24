@@ -76,6 +76,37 @@ class Mycontroller extends Controller
         
         return view('leave_form',['catagories'=>$catagories,'employee_names'=>$employee_names]);
     }
+
+    public function leave_form_submit(Request $request){
+      
+     $employee_id=session()->get('employee_id');
+     $catagory = $request->input('catagory');
+     $leave_type = $request->input('leave_type');
+     $employee = $request->input('employee_name');
+     $start_date = date('Y-m-d',strtotime($request->input('fromdate')));
+     $end_date = date('Y-m-d',strtotime($request->input('todate')));
+     $leave_applied = $request->input('numberofdays');
+     $reason = $request->input('reason');
+     $remarks = $request->input('remarks');
+     $catagory = $request->input('catagory');
+         
+        DB::table('leave_table')->insert(
+            ['catagory' => $catagory,
+      'leave_type'=>$leave_type,
+      'duty_assigned_to'=>$employee,
+      'start_date'=>$start_date,
+      'end_date'=>$end_date,
+      'leave_applied'=>$leave_applied,
+      'reason'=>$reason,
+      'remarks'=>$remarks,  
+            'status'=>1   ,
+            'employee_id'=>$employee_id        
+            ]);
+        
+      Session()->flash('flash_message', 'Leave Submitted successfully!');
+      return redirect('/leave_form');
+    }
+
  public function leave_view_form(){
               $hrlineDuty=DB::table('leave_table')
                       ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name')
@@ -100,8 +131,8 @@ class Mycontroller extends Controller
                 ->select('designation')
                 ->get();
         $catagory=DB::table('leave_table')
-              ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','employee')
-               ->join('employees', 'employees.employee_id', '=', 'leave_table.employee')
+              ->select('leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','employees.employee_id','duty_assigned_to')
+               ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
               ->get();
               // dd($catagory);
 
@@ -196,33 +227,7 @@ class Mycontroller extends Controller
         echo 'Inserted';
     }
         
-    public function leave_form_submit(Request $request){
-			
-        $employee_id=session()->get('employee_id');
-         $catagory = $request->input('catagory');
-		 $leave_type = $request->input('leave_type');
-		 $employee = $request->input('employee_name');
-		 $start_date = date('Y-m-d',strtotime($request->input('fromdate')));
-		 $end_date = date('Y-m-d',strtotime($request->input('todate')));
-		 $leave_applied = $request->input('numberofdays');
-		 $reason = $request->input('reason');
-		 $remarks = $request->input('remarks');
-		 $catagory = $request->input('catagory');
-         
-        DB::table('leave_table')->insert(
-            ['catagory' => $catagory,
-			'leave_type'=>$leave_type,
-			'duty_assigned_to'=>$employee,
-			'start_date'=>$start_date,
-			'end_date'=>$end_date,
-			'leave_applied'=>$leave_applied,
-			'reason'=>$reason,
-			'remarks'=>$remarks,  
-            'status'=>1   ,
-            'employee_id'=>$employee_id        
-            ]);
-        echo 'Inserted';
-    }
+    
     public function leave_show()
 
     { $leave=DB::table('leave_details')
@@ -420,12 +425,43 @@ class Mycontroller extends Controller
            return $pdf->download('conveyance.pdf');
     }
 
-     public function view_pdf()
+     public function view_pdf($leave_id)
     {
+      $leave_details = collect(\DB::SELECT("SELECT
+              employees.employee_name,
+              employees.employee_code,
+              line_manager.employee_name AS line_manager,
+              department_table.department,
+              designation_table.designation,
+              leave_table.created,
+              leave_table.remarks,
+              leave_categories.leave_category,
+              leave_table.leave_type,
+              leave_table.start_date,
+              leave_table.end_date,
+              leave_table.leave_applied,
+              leave_table.reason,
+              leave_table.`status`,
+              duty_assign.employee_name as duty_assign_name,
+              duty_assign.signature AS duty_signature,
+              line_manager.signature AS line_manager_signature,
+              employees.signature AS applicant_signature
+              FROM
+              leave_table
+              INNER JOIN employees ON employees.employee_id = leave_table.employee_id
+              INNER JOIN employees AS line_manager ON employees.line_manager_id = line_manager.employee_id
+              INNER JOIN employees AS duty_assign ON leave_table.duty_assigned_to = duty_assign.employee_id
+              INNER JOIN department_table ON employees.department = department_table.department_id
+              INNER JOIN designation_table ON employees.designation = designation_table.designation_id
+              INNER JOIN leave_categories ON leave_table.catagory = leave_categories.leave_category_id
+              WHERE leave_table.leave_id = $leave_id
+              "))->first();
+      //$data['leave_details'] = $leave_details;
+      //dd($leave_details);
 
-     $pdf = PDF::loadView('view');
-           return $pdf->download('view.pdf');
-        //return view('view');
+     //$pdf = PDF::loadView('view',['leave_details'=>$leave_details]);
+           //return $pdf->download('view.pdf');
+      return view('view',['leave_details'=>$leave_details]);
     }
     public function view()
     {
@@ -439,7 +475,18 @@ class Mycontroller extends Controller
 //     }
      public function debit()
     {
-         return view('debit');
+         $employee = DB::table('debit')
+                ->select('account_name','particulars',
+         'taka',
+          'total_taka',
+           'taka_in_word',
+            'received_by',
+             'prepared_by',
+              'checked_by',
+                   'approved_by'
+            )
+                ->get();
+        return view('debit',['employee'=>$employee]);
     }
       public function debit_pdf()
       {
@@ -488,4 +535,40 @@ class Mycontroller extends Controller
             ]);
         echo 'Inserted';
     }
- }
+     public function debit_submit(Request $request){
+        $particulars = $request->input('particulars');
+        $taka = $request->input('taka');
+        $total_taka = $request->input('total_taka');
+        $taka_in_word = $request->input('taka_in_word');
+        $received_by = $request->input('received_by');
+        $prepared_by = $request->input('prepared_by');
+        $checked_by = $request->input('checked_by');
+        $approved_by = $request->input('approved_by');
+        
+        DB::table('debit')->insert(
+            ['particulars' => $particulars,
+            'taka' => $taka,
+            'total_taka' => $total_taka,
+            'taka_in_word' => $taka_in_word,
+            'received_by' => $received_by,
+            'prepared_by' => $prepared_by,
+            'checked_by' => $checked_by,
+            'approved_by' => $approved_by
+
+            ]);
+        echo 'Inserted';
+    }
+    public function view_employee(){
+        
+
+        $employee=DB::table('employees')
+              ->select('employee_code','employee_name',
+                'employee_email','department_table.department','designation_table.designation','password','is_line_manager','profile_image','signature')
+               ->join('department_table', 'department_table.department_id', '=', 'employees.department')
+                ->join('designation_table', 'designation_table.designation_id', '=', 'employees.designation')
+              ->get();
+              // dd($catagory);
+
+        return view('view_employee',['employee'=>$employee]) ;
+      }
+}

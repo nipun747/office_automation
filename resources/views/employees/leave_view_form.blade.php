@@ -24,14 +24,14 @@ i{
    <tr>
     <th>Applicant</th>    
     <th>Leave Type</th>    
-     <th>Hour of leave</th>    
+    <th>Hour of leave</th>    
     <th>Start Date</th>
     <th>End Days</th>
     <th>Leave Applied</th>
     <th>Reason</th>
     <th>Remarks</th>
     <th>Action</th>
-     
+    <th>Download</th>
   </tr>
 
   @foreach($assignedDuty as $catagory)
@@ -54,6 +54,7 @@ i{
      @else($catagory->status == 5)
     <td><span class="label label-danger">Rejected</span></td>
     @endif
+    <td><a href="{{url('/view_pdf')}}/{{$catagory->leave_id}}"><i class = "fa fa-download"></i><a></td>
   </tr>
   @endforeach
 </table>  

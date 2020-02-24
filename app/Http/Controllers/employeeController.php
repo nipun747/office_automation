@@ -15,6 +15,7 @@ class employeeController extends Controller
                       ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
                       ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
                       ->where('leave_table.duty_assigned_to',$user_id )
+                      ->orderBy('leave_table.created','DESC')
                        ->get();
               return view('employees.leave_view_form',['assignedDuty'=>$assignedDuty]);
    }

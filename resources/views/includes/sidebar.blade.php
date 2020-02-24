@@ -33,7 +33,9 @@
 
                           <li><a href="{{url('view')}}">Leave view pdf</a></li>
                            <li><a href="{{url('conveyance')}}">conveyance pdf</a></li>
+                           <li><a href="{{url('conveyance_input')}}">conveyance input</a></li>
                             <li><a href="{{url('debit')}}">debit pdf</a></li>
+                             <li><a href="{{url('debit_input')}}">debit input</a></li>
                         <li><a href="{{url('designation_form')}}">Designation</a></li>
                          @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
                            <li><a href="{{url('leave_form')}}">Leave form</a></li>
