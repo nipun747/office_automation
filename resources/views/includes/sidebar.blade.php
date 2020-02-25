@@ -27,11 +27,13 @@
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
                         <li><a href="{{url('department_form')}}">Department</a></li>
                          <li><a href="{{url('leave')}}">Leave</a></li>
+                          <li><a href="{{url('view_employee')}}">view employee</a></li>
                            <li><a href="{{url('hrviewLeave')}}">HR view leave</a></li>
                           <li><a href="{{url('viewPendingLeave')}}">Line Manager View Leave</a></li>
-                          <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave</a></li>
+                          <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave/pdf</a></li>
 
-                          <li><a href="{{url('view')}}">Leave view pdf</a></li>
+                          
+                           <li><a href="{{url('leave_log')}}">Leave Log</a></li>
                            <li><a href="{{url('conveyance')}}">conveyance pdf</a></li>
                            <li><a href="{{url('conveyance_input')}}">conveyance input</a></li>
                             <li><a href="{{url('debit')}}">debit pdf</a></li>
