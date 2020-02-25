@@ -60,3 +60,8 @@ Route::get('conveyance_input','Mycontroller@conveyance_input');
 Route::get('debit_input','Mycontroller@debit_input');
 Route::post('/debit_submit','Mycontroller@debit_submit');
 Route::get('view_employee','Mycontroller@view_employee');
+Route::get('edit/{employee_code?}','Mycontroller@edit');
+//Route::post('update','Mycontroller@update')->name('update');
+Route::post('/update_employee','Mycontroller@updateEmployee');
+
+

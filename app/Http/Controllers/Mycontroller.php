@@ -560,10 +560,11 @@ class Mycontroller extends Controller
     }
     public function view_employee(){
         
+        
 
         $employee=DB::table('employees')
-              ->select('employee_code','employee_name',
-                'employee_email','department_table.department','designation_table.designation','password','is_line_manager','profile_image','signature')
+              ->select('employee_id','employee_code','employee_name',
+                'employee_email','department_table.department','designation_table.designation','is_line_manager','profile_image','signature')
                ->join('department_table', 'department_table.department_id', '=', 'employees.department')
                 ->join('designation_table', 'designation_table.designation_id', '=', 'employees.designation')
               ->get();
@@ -571,4 +572,89 @@ class Mycontroller extends Controller
 
         return view('view_employee',['employee'=>$employee]) ;
       }
+      public function edit($employee_code = 'nai')
+      {
+        $designations = DB::table('designation_table')
+                            ->select('designation_table.*')
+                            ->where('status',1)
+                            ->get();
+        $departments = DB::table('department_table')
+                            ->select('department_table.*')
+                            ->where('status',1)
+                            ->get();
+        $line_manager=DB::table('employees')
+                        ->select('employees.*')
+                        ->where('status',1)
+                        ->where('is_line_manager',1)
+                        ->get();
+                      // dd($line_manager);
+        $employee=DB::table('employees')
+              ->select('employee_id','employee_code','employee_name','line_manager_id','password',
+                'employee_email','department_table.department','designation_table.designation','designation_table.designation_id','is_line_manager','profile_image','signature','department_table.department_id')
+               ->join('department_table', 'department_table.department_id', '=', 'employees.department')
+                ->join('designation_table', 'designation_table.designation_id', '=', 'employees.designation')
+                ->where('employee_code',$employee_code)
+              ->first();
+
+
+              // dd($employee);
+        return view('employees.edit',['employee' =>$employee,'designations'=>  $designations,
+                'departments' => $departments,
+                'line_manager'=>$line_manager]);
+      }
+      public function updateEmployee(Request $request){
+        //echo "hi"; exit;
+        //dd('hi');
+         //$employee=employee::find($employee_code);
+          $employee_code = $request->input('employee_code');
+        $employee_email = $request->input('employee_email');
+        $employee_name = $request->input('employee_name');
+        $designation =$request->input('designation');
+        $department = $request->input('department');
+        $line_manager_id = $request->input('line_manager_id');
+        $password = $request->input('password');
+        $is_line_manager = $request->input('is_line_manager');
+        $status = $request->input('status');
+         DB::table('employees')
+         ->where('employee_code', $employee_code)
+         ->update(
+            [
+            'employee_name' => $employee_name,
+            'employee_email' => $employee_email,
+            'designation' => $designation,
+            'department' => $department,
+            'line_manager_id' => $line_manager_id,
+            //'profile_image' => $name,
+            //'signature' => $signature,
+            'password' => $password,
+            'is_line_manager' => $is_line_manager,
+            'status' => $status
+            ]);
+          // ->where('employee_code', $employee_code->employee_code)
+          //        ->update(['active' => true]);
+    //     }
+        return redirect('/view_employee');
+    }
+    //      DB::table('employees')
+    //      ->where('active', false)
+    //      ->chunkById(100, function ($employee_code) {
+    //     foreach ($employee_code as $employee_code) {
+    //         DB::table('employees')
+    //             ->where('employee_code', $employee_code->employee_code)
+    //             ->update(['active' => true]);
+    //     }
+    //     dd();
+    // });
+        //  $employee=employee::find($employee_code);
+        // $employee->employee_code = $request->get('employee_code');
+        // $employee->employee_email = $request->get('employee_email');
+        // $employee->employee_name = $request->get('employee_name');
+        // $employee->designation =$request->get('designation');
+        // $employee->department = $request->get('department');
+        // $employee->line_manager_id = $request->get('line_manager_id');
+        // $employee->password = $request->get('password');
+        // $employee->is_line_manager = $request->get('is_line_manager');
+        // $employee->save();
+        // return redirect()-route('employees_form')->with('success','Data Updated');
+      
 }

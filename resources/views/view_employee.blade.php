@@ -28,10 +28,11 @@ i{
     <th>Employee Email</th>
     <th>Department</th>
     <th>Line Manager</th>
-    <th>Password</th>
+   
     <th>Is Line Manager</th>
     <th>Profile Image</th>
     <th>Signature</th>
+    <th>Edit</th>
   </tr>
 
   @foreach($employee as $employee)
@@ -44,10 +45,11 @@ i{
     <td>{{$employee->employee_email}}</td>
     <td>{{$employee->department}}</td>
     <td></td>
-    <td>{{$employee->password}}</td>
+   
     <td>{{$employee->is_line_manager}}</td>
     <td><img style="height:40px;width:100px" src= "{{url('/images')}}/{{$employee->profile_image}}"></td>
     <td><img style="height:40px;width:100px" src= "{{url('/images')}}/{{$employee->signature}}"></td>
+    <td><a href="{{url('/edit')}}/{{$employee->employee_code}}" class="btn btn-warning">Edit</a></td>
   </tr>
   @endforeach
 </table>
