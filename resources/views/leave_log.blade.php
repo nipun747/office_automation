@@ -5,6 +5,7 @@
 table, th, td {
   border: 1px solid black;
    border-collapse:collapse;
+   text-align: center;
 }
 </style> 
 
@@ -23,7 +24,7 @@ table, th, td {
  </tr>
  @foreach($leave_details as $employees)
  <tr>
-  <td>{{$employees->employee_id}}</td>
+  <td>{{$employees->employee_name}}</td>
   <td>{{$employees->leave_id}}</td>
   <td>{{$employees->leave_status}}</td>
   <td >{{$employees->created}}</td>

@@ -408,8 +408,7 @@ class Mycontroller extends Controller
            'by',
             'purpose',
              'taka',
-              'total',
-               'word',
+              
                 'received_by',
                  'prepared_by',
                   'checked_by',
@@ -427,6 +426,28 @@ class Mycontroller extends Controller
 
      public function view_pdf($leave_id)
     {
+
+      $leave_applicant_id = DB::table('leave_table')
+                ->select('leave_table.leave_id','leave_table.employee_id')
+                ->where('leave_id', $leave_id)
+                ->first()->employee_id;
+
+                 
+      $leave_categories = DB::table('leave_categories')
+                ->select('leave_category_id','leave_category','available_days')
+                ->get(); 
+
+      $leave_count = collect(\DB::SELECT("SELECT
+              leave_table.catagory,
+                count(leave_table.catagory) as count
+                FROM
+                leave_table
+                WHERE
+                leave_table.employee_id =  $leave_applicant_id 
+                AND leave_table.`status` = 4
+                GROUP BY leave_table.catagory
+                "))->first();
+
       $leave_details = collect(\DB::SELECT("SELECT
               employees.employee_name,
               employees.employee_code,
@@ -435,6 +456,7 @@ class Mycontroller extends Controller
               designation_table.designation,
               leave_table.created,
               leave_table.remarks,
+              leave_table.catagory,
               leave_categories.leave_category,
               leave_table.leave_type,
               leave_table.start_date,
@@ -445,23 +467,38 @@ class Mycontroller extends Controller
               duty_assign.employee_name as duty_assign_name,
               duty_assign.signature AS duty_signature,
               line_manager.signature AS line_manager_signature,
-              employees.signature AS applicant_signature
+              employees.signature AS applicant_signature,
+              leave_table.employee_id,
+              hr.employee_name AS hr_name,
+              hr.signature AS hr_signature
               FROM
               leave_table
               INNER JOIN employees ON employees.employee_id = leave_table.employee_id
               INNER JOIN employees AS line_manager ON employees.line_manager_id = line_manager.employee_id
               INNER JOIN employees AS duty_assign ON leave_table.duty_assigned_to = duty_assign.employee_id
+              INNER JOIN employees AS hr ON 1=1 AND hr.department = 3
               INNER JOIN department_table ON employees.department = department_table.department_id
               INNER JOIN designation_table ON employees.designation = designation_table.designation_id
               INNER JOIN leave_categories ON leave_table.catagory = leave_categories.leave_category_id
               WHERE leave_table.leave_id = $leave_id
               "))->first();
-      //$data['leave_details'] = $leave_details;
-      //dd($leave_details);
 
-     //$pdf = PDF::loadView('view',['leave_details'=>$leave_details]);
-           //return $pdf->download('view.pdf');
-      return view('view',['leave_details'=>$leave_details]);
+      $available_leave_array = [];
+      foreach ($leave_categories as $leave) {
+        $available_leave_array[$leave->leave_category_id] = $leave->available_days;
+      }
+
+      $availed_leave_array = [];
+      $availed_leave_array[$leave_count->catagory] = $leave_count->count;
+      
+      $pdf = PDF::loadView('view',[
+        'leave_details'=>$leave_details,
+        'available_leave_array'=>$available_leave_array,
+        'availed_leave_array'=>$availed_leave_array]);
+
+     return $pdf->download('view.pdf');
+      //return view('view',['leave_details'=>$leave_details,'available_leave_array'=>$available_leave_array,
+      //'availed_leave_array'=>$availed_leave_array]);
     }
     public function view()
     {
@@ -504,9 +541,10 @@ class Mycontroller extends Controller
     }
      public function conveyance_submit(Request $request){
        $name = $request->input('name');
-        $date = $request->input('date');
-         $from = $request->input('from');
-          $to = $request->input('to');
+
+        $date = date('Y-m-d',strtotime($request->input('date')));
+         $from = date('Y-m-d',strtotime($request->input('from')));
+          $to = date('Y-m-d',strtotime($request->input('to')));
            $by = $request->input('by');
             $purpose = $request->input('date');
              $taka = $request->input('taka');
@@ -525,8 +563,7 @@ class Mycontroller extends Controller
            'by' => $by,
             'purpose' => $date,
              'taka'=> $taka,
-              'total' => $total,
-               'word' => $word,
+              
                 'received_by' => $received_by,
                  'prepared_by' => $prepared_by,
                   'checked_by' => $checked_by,
@@ -625,15 +662,29 @@ class Mycontroller extends Controller
             'department' => $department,
             'line_manager_id' => $line_manager_id,
             //'profile_image' => $name,
-            //'signature' => $signature,
-            'password' => $password,
-            'is_line_manager' => $is_line_manager,
+            //'signature' => $signature,            
             'status' => $status
             ]);
           // ->where('employee_code', $employee_code->employee_code)
           //        ->update(['active' => true]);
     //     }
         return redirect('/view_employee');
+    }
+     public function leave_log()
+    {
+      $leave_details=DB::table('leave_table')
+              ->select('leave_id','leave_status_table.leave_status','leave_table.created','employees.employee_id','employees.employee_name')
+               ->leftJoin('employees', 'employees.employee_id', '=', 'leave_table.employee_id', 'employees.employee_name', '=', 'leave_table.employee_id')
+               ->join('leave_status_table', 'leave_status_table.leave_status_id', '=', 'leave_table.status')
+               
+              ->get();
+
+      //$data['leave_details'] = $leave_details;
+      //dd($leave_details);
+
+     //$pdf = PDF::loadView('view',['leave_details'=>$leave_details]);
+           //return $pdf->download('view.pdf');
+      return view('leave_log',['leave_details' =>$leave_details]);
     }
     //      DB::table('employees')
     //      ->where('active', false)
@@ -656,5 +707,43 @@ class Mycontroller extends Controller
         // $employee->is_line_manager = $request->get('is_line_manager');
         // $employee->save();
         // return redirect()-route('employees_form')->with('success','Data Updated');
-      
+    public function leave_log_submit(Request $request){
+            
+        $employee_id=session()->get('employee_id');
+        $employee_name=session()->get('employee_name');
+        $department=session()->get('department');
+        $designation=session()->get('designation');
+        $line_manager=session()->get('line_manager');
+         $leave_category = $request->input('leave_category');
+         $leave_type = $request->input('leave_type');
+        
+         $start_date = date('Y-m-d',strtotime($request->input('fromdate')));
+         $end_date = date('Y-m-d',strtotime($request->input('todate')));
+         $leave_applied = $request->input('numberofdays');
+         
+         $remarks = $request->input('remarks');
+        
+         
+        DB::table('leave_details')->insert(
+            ['employee_id'=>$employee_id,
+            'employee_name'=>$employee_name,
+            'department'=>$department,
+            'designation'=>$designation,    
+            'leave_category' => $leave_category,
+            'leave_type'=>$leave_type,
+            
+            'start_date'=>$start_date,
+            'end_date'=>$end_date,
+            'leave_applied'=>$leave_applied,
+          
+            'remarks'=>$remarks  
+             
+                   
+            ]);
+        echo 'Inserted';
+    } 
+    public function conveyance_view_received()
+    {
+      return view('conveyance_view_received');
+    } 
 }

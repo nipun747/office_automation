@@ -22,25 +22,57 @@
                     </div>
                 </li>
                 <li class="active">
-                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span> <span class="fa arrow"></span></a>
+                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Employee Panel</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
+                         
+                         @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
                         <li><a href="{{url('department_form')}}">Department</a></li>
-                         <li><a href="{{url('leave')}}">Leave</a></li>
-                          <li><a href="{{url('view_employee')}}">view employee</a></li>
+                        
+                          
+
+                          <li><a href="{{url('designation_form')}}">Designation</a></li>    
+                      
+                           
+                        
+                    </ul>
+                </li>
+                <li>
+                     <li class="active">
+                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Leave Panel</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="{{url('leave_form')}}">Leave form</a></li>
+                         
+                          
                            <li><a href="{{url('hrviewLeave')}}">HR view leave</a></li>
                           <li><a href="{{url('viewPendingLeave')}}">Line Manager View Leave</a></li>
                           <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave/pdf</a></li>
 
                           
                            <li><a href="{{url('leave_log')}}">Leave Log</a></li>
+                           <li><a href="{{url('leave')}}">Leave</a></li>
+                        
+                    </ul>
+                </li>
+                <li>
+                  <li class="active">
+                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Conveyance Panel</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+
                            <li><a href="{{url('conveyance')}}">conveyance pdf</a></li>
                            <li><a href="{{url('conveyance_input')}}">conveyance input</a></li>
+                        
+                        
+                    </ul>
+                </li>
+                <li>
+                    <li>
+                  <li class="active">
+                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Debit Panel</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                       
                             <li><a href="{{url('debit')}}">debit pdf</a></li>
                              <li><a href="{{url('debit_input')}}">debit input</a></li>
-                        <li><a href="{{url('designation_form')}}">Designation</a></li>
-                         @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
-                           <li><a href="{{url('leave_form')}}">Leave form</a></li>
                         
                     </ul>
                 </li>

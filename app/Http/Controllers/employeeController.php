@@ -21,6 +21,7 @@ class employeeController extends Controller
    }
    public function accRejectDuty(Request $request){
    		
+      
    		$leave_id = $request->input('leave_id');
    		$status = $request->input('status');
    		if($status == 1){
@@ -32,7 +33,12 @@ class employeeController extends Controller
    				->where('leave_id',$leave_id)
    				->update(['status'=>$update_status]);
 
+      $employee_id=session()->get('employee_id');
+      DB::table('leave_log')
+          ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
+
    		return $update_status;
+
 
    }
    public function viewPendingLeave() 
@@ -63,7 +69,13 @@ class employeeController extends Controller
    				->where('leave_id',$leave_id)
    				->update(['status'=>$update_status]);
 
-   		return $update_status;
+       $employee_id=session()->get('employee_id');
+      DB::table('leave_log')
+          ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
+
+      return $update_status;
+
+   		
 	}
 public function hrviewLeave() 
    {
@@ -92,8 +104,13 @@ public function hrviewLeave()
    		DB::table('leave_table')
    				->where('leave_id',$leave_id)
    				->update(['status'=>$update_status]);
+           $employee_id=session()->get('employee_id');
+      DB::table('leave_log')
+          ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
 
-   		return $update_status;
+      return $update_status;
+
+   		
 	}
 }
 

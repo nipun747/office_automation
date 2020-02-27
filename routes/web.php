@@ -63,5 +63,6 @@ Route::get('view_employee','Mycontroller@view_employee');
 Route::get('edit/{employee_code?}','Mycontroller@edit');
 //Route::post('update','Mycontroller@update')->name('update');
 Route::post('/update_employee','Mycontroller@updateEmployee');
-
+Route::get('/leave_log','Mycontroller@leave_log');
+Route::get('conveyance_view_received','Mycontroller@conveyance_view_received');
 

@@ -32,7 +32,7 @@ i{
     <th>Remarks</th>
     <th>Leave Status</th>
     <th>Action</th>
-     
+     <th>Download</th> 
   </tr>
 
   @foreach($hrlineDuty as $catagory)
@@ -54,6 +54,7 @@ i{
     @else
     <td>{{$catagory->next_status}}</td>
     @endif
+     <td><a href="{{url('/view_pdf')}}/{{$catagory->leave_id}}"><i class = "fa fa-download"></i><a></td>
   </tr>
   @endforeach
 </table>  

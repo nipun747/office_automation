@@ -103,36 +103,47 @@ h3{
         <label><b>Applicant Signature :</b> <img style="height:40px;width:300px" src= "{{url('/images')}}/{{$leave_details->applicant_signature}}"> </label>
         
   </div>
- <h3 >HRD Section</h3>
+ <h3>HRD Section</h3>
 <table style="width:100%">
   <tr>
     <th>Leave Type</th>
      <th>Opening Balance</th>
-       <th>Applied Leave</th>
-       <th>Remaining Days</th>
-       <th>Remarks</th>
+     <th>Applied Leave</th>
+     <th>Remaining Days</th>
+     <th>Remarks</th>
   </tr>  
    <tr>
     <th>Sick Leave</th>
+    @php 
+    $sick_available = isset($available_leave_array[1])?$available_leave_array[1]:0; 
+    $sick_leave_availed = isset($availed_leave_array[1])?$availed_leave_array[1]:0;
+    $opening_sick_leave = $sick_available - $sick_leave_availed;
+    @endphp
+     <td>{{ $opening_sick_leave }}</td>    
+     <td> @if($leave_details->catagory == 1) {{$leave_details->leave_applied}} @else {{ 0 }} @endif </td> 
+     <td> @if($leave_details->catagory == 1) {{ $opening_sick_leave - $leave_details->leave_applied}} @else {{ $opening_sick_leave }} @endif </td>
      <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
   </tr>  
   <tr>
     <th>Earned Leave</th>
+    @php 
+    $earned_available = isset($available_leave_array[2])?$available_leave_array[2]:0; 
+    $earned_leave_availed = isset($availed_leave_array[2])?$availed_leave_array[2]:0;
+    $opening_earned_leave = $earned_available - $earned_leave_availed;
+    @endphp
+     <td>{{ $opening_earned_leave }}</td>    
+     <td> @if($leave_details->catagory == 2) {{$leave_details->leave_applied}} @else {{ 0 }} @endif </td> 
+     <td>@if($leave_details->catagory == 2) {{ $opening_earned_leave - $leave_details->leave_applied}} @else {{ $opening_earned_leave }} @endif</td>
      <td></td>
-       <td></td>
-       <td></td>
-       <td></td>
   </tr>  
   
   <tr>
-    <th  >Verified By</th>
-     <td  colspan="1"></td>
-       
-       <th  >Sign & Date</td>
-       <td  colspan="3"></td>
+    <th>Verified By</th>
+    <td  colspan="1">{{$leave_details->hr_name}}</td>
+    <th>Sign & Date</td>
+    <td width="20%" colspan="2">@if($leave_details->status==4 )
+      <img style="height:50px;width:300px" src= "{{url('/images')}}/{{$leave_details->hr_signature}}"> {{date('Y-m-d',strtotime($leave_details->created))}}
+@endif</td>
   </tr>  
 </table>
 </body>

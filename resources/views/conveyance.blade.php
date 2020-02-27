@@ -42,11 +42,7 @@ table, th, td {
   <th style="text-align:right;" colspan="16" width="60%">Total taka=</th>
   <td colspan="8" width="20%">{{$employees->total}}</td>
  </tr>
- <tr>
-  <th style="text-align:left;" colspan="16" width="100%">Taka in Word:</th>
-  <th style="text-align:left;" colspan="8" width="100%">{{$employees->word}}</th>
-  
- </tr>
+ 
   @endforeach
  
 </table><br><br><br><br>
