@@ -131,18 +131,18 @@ input:checked + .slider:before {
 
    
     <div class="form-group">
-        <label for="imageInput">Profile Image</label>
-        <input  name="input_img" type="file" value="{{$employee->profile_image}}" id="imageInput">
+        <label for="profile_image">Profile Image</label>
+        <input  name="profile_image" type="file" value="" id="imageInput">
         <img class="col-sm-6" id="preview"  src="">
     </div>
    
    <div class="form-group ">
-        <label for="signatureinput">Signature</label>
-        <input  name="input_signature" value="{{$employee->signature}}" type="file" >
+        <label for="signature">Signature</label>
+        <input  name="signature" value="" type="file" >
         <img class="col-sm-6" id="preview"  src="">
     </div>
     <label class="switch">
-  <input type="checkbox" name="status" checked>
+  <input type="checkbox" name="status" value="1" checked>
   <span class="slider round"></span>
 </label>
     <div class="form-group text-center">

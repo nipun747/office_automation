@@ -407,12 +407,9 @@ class Mycontroller extends Controller
           'to',
            'by',
             'purpose',
-             'taka',
+             'taka','profile_image'
               
-                'received_by',
-                 'prepared_by',
-                  'checked_by',
-                   'approved_by'
+                
             )
                 ->get();
         return view('conveyance',['employee'=>$employee]);
@@ -543,17 +540,34 @@ class Mycontroller extends Controller
        $name = $request->input('name');
 
         $date = date('Y-m-d',strtotime($request->input('date')));
-         $from = date('Y-m-d',strtotime($request->input('from')));
-          $to = date('Y-m-d',strtotime($request->input('to')));
+         $from = $request->input('from');
+          $to = $request->input('to');
            $by = $request->input('by');
-            $purpose = $request->input('date');
+            $purpose = $request->input('purpose');
              $taka = $request->input('taka');
-              $total = $request->input('total');
-               $word = $request->input('word');
-                $received_by = $request->input('received_by');
-                 $prepared_by = $request->input('prepared_by');
-                  $checked_by = $request->input('checked_by');
-                   $approved_by = $request->input('approved_by');
+              $profile_image = $request->input('profile_image');
+
+             try {
+        $this->validate($request, [
+            'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+        ]);
+    }
+    catch (\Illuminate\Validation\ValidationException $e){
+         echo "profile_image not valid";exit;
+    }
+ if ( $request->hasFile('profile_image')){
+                if ($request->file('profile_image')->isValid()){
+                    $file = $request->file('profile_image');
+                    $profile_image = $file->getClientOriginalName();
+                    $file->move('images' , $profile_image);
+                    $inputs = $request->all();
+                    $inputs['path'] = $profile_image;
+                }
+                else{
+                   
+                }
+            }
+              
         DB::table('conveyance')->insert(
             [
             'name' => $name,
@@ -563,12 +577,8 @@ class Mycontroller extends Controller
            'by' => $by,
             'purpose' => $date,
              'taka'=> $taka,
-              
-                'received_by' => $received_by,
-                 'prepared_by' => $prepared_by,
-                  'checked_by' => $checked_by,
-                   'approved_by' => $approved_by
-            
+              'profile_image'=>$profile_image
+                
             ]);
         echo 'Inserted';
     }
@@ -648,10 +658,63 @@ class Mycontroller extends Controller
         $employee_name = $request->input('employee_name');
         $designation =$request->input('designation');
         $department = $request->input('department');
+         // $profile_image = $request->input('profile_image');
+          // $signature = $request->input('signature');
         $line_manager_id = $request->input('line_manager_id');
         $password = $request->input('password');
         $is_line_manager = $request->input('is_line_manager');
         $status = $request->input('status');
+       
+        if ($status !=1 ) $status=0;
+        try {
+        $this->validate($request, [
+            'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+        ]);
+    }
+    catch (\Illuminate\Validation\ValidationException $e){
+         echo "profile_image not valid";exit;
+    }
+
+    try {
+        $this->validate($request, [
+            'signature' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+        ]);
+    }
+    catch (\Illuminate\Validation\ValidationException $e){
+         echo "signature not valid";exit;
+    }
+
+
+
+
+             if ( $request->hasFile('profile_image')){
+                if ($request->file('profile_image')->isValid()){
+                    $file = $request->file('profile_image');
+                    $profile_image = $file->getClientOriginalName();
+                    $file->move('images' , $profile_image);
+                    $inputs = $request->all();
+                    $inputs['path'] = $profile_image;
+                }
+                else{
+                   
+                }
+            }
+
+             if ( $request->hasFile('signature')){
+                if ($request->file('signature')->isValid()){
+                    $file = $request->file('signature');
+                    $signature = $file->getClientOriginalName();
+                    $file->move('images' , $signature);
+                    $inputs = $request->all();
+                    $inputs['path'] = $signature;
+
+                    
+                
+                }
+            }
+
+
+        //dd($status);
          DB::table('employees')
          ->where('employee_code', $employee_code)
          ->update(
@@ -661,8 +724,8 @@ class Mycontroller extends Controller
             'designation' => $designation,
             'department' => $department,
             'line_manager_id' => $line_manager_id,
-            //'profile_image' => $name,
-            //'signature' => $signature,            
+            'profile_image' => $profile_image,
+            'signature' => $signature,            
             'status' => $status
             ]);
           // ->where('employee_code', $employee_code->employee_code)
@@ -742,16 +805,42 @@ class Mycontroller extends Controller
             ]);
         echo 'Inserted';
     } 
-    public function conveyance_view_received(){
-    // { $conveyance=DB::table('conveyance')
-    //                   ->select('conveyance.*')
+    // public function conveyance_for_received()
+    // {$user_id = session()->get('employee_id');
+    //  $conveyance=DB::table('conveyance')
+    //                   ->select('conveyance.status','id','name','date','to','by','purpose','taka','received_by','prepared_by','checked_by','approved_by','conveyance_status.conveyance_status')
+    //                   ->join('conveyance_status', 'conveyance_status.conveyance_status_id', '=', 'conveyance.status')
+    //                    ->join('employees', 'employees.employee_id', '=', 'conveyance.id')
+    //                   ->where('employees.line_manager_id',$user_id )
     //                   ->get();
-        // $status=DB::table('conveyance_status')
-        //            ->select('conveyance_status.*')
-        //            ->get();             
-              return view('conveyance_view_received');
+    //  // $assignedDuty=DB::table('leave_table')
+    //  //                  ->select('leave_table.status','leave_table.leave_id','leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name','leave_categories.leave_category')
+    //  //                  ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
+    //  //                  ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
+    //  //                  ->where('leave_table.duty_assigned_to',$user_id )
+    //  //                  ->orderBy('leave_table.created','DESC')
+    //  //                   ->get();
+    //  //          return view('employees.leave_view_form',['assignedDuty'=>$assignedDuty]);
+    //  //    // $status=DB::table('conveyance_status')
+    //  //    //            ->select('conveyance_status.*')
+    //  //    //            ->get();             
+    //           return view('conveyance_view_received',['conveyance'=>$conveyance]);
       
-    } 
+    // } 
+    public function conveyance_view_received()
+    {
+
+      // $user_id = session()->get('employee_id');
+      $conveyance=[];
+     $conveyance= DB::table('conveyance')
+                      ->select('conveyance.status','name','conveyance.date','to','by','purpose','taka','received_by','prepared_by','checked_by','approved_by','conveyance_status.conveyance_status')
+                      ->join('conveyance_status', 'conveyance_status.conveyance_status_id', '=', 'conveyance.status')
+                       ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                      ->first();
+      // dd($conveyance);
+             return view('conveyance_view_received',['conveyance'=>$conveyance]);
+    }
+
    //   public function viewAssignedDuty()
    // {
    //  $user_id = session()->get('employee_id');
@@ -786,4 +875,27 @@ class Mycontroller extends Controller
 
 
    // }
+    public function conveyancefunction(Request $request){
+      
+      
+      $id = $request->input('id');
+      $status = $request->input('status');
+      if($status == 1){
+        $update_status = 2;
+      }else{
+        $update_status = 3;
+      }
+      DB::table('conveyance')
+          ->where('id',$id)
+          ->update(['status'=>$update_status]);
+
+
+      // $employee_id=session()->get('employee_id');
+      // DB::table('leave_log')
+      //     ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
+
+      return $update_status;
+
+
+   }
 }

@@ -12,30 +12,31 @@ table, th, td {
   <table style="width:100%"
  >
  <tr>
-  <th style="text-align:left;" colspan="8" width="100%">Employee Name:</th>
+  <th style="text-align:left;" width="100%">Employee Name:</th>
   <th colspan="14">@if(session()->has('employee_name')) 
                      {{ Session::get('employee_name') }}@endif</th>
  </tr>
  <tr>
-  <th colspan="4" width="20%">Date</th>
-  <th colspan="4" width="20%">From</th>
-  <th colspan="4" width="20%">To</th>
-  <th colspan="4" width="20%">By</th>
-  <th colspan="4" width="20%">Purpose</th>
-  <th colspan="4" width="20%">Taka</th>
- 
+  <th >Date</th>
+  <th >From</th>
+  <th >To</th>
+  <th >By</th>
+  <th >Purpose</th>
+  <th >Taka</th>
+ <th >Profile Image</th>
  </tr>
  
    @foreach($employee as $employees)
  
   <tr>
   
-  <td colspan="4" width="20%">{{$employees->date}}</td>
-  <td colspan="4" width="20%">{{$employees->from}}</td>
-  <td colspan="4" width="20%">{{$employees->to}}</td>
-  <td colspan="4" width="20%">{{$employees->by}}</td>
-  <td colspan="4" width="20%">{{$employees->purpose}}</td>
-   <td colspan="4" width="20%">{{$employees->taka}}</td>
+  <td >{{$employees->date}}</td>
+  <td >{{$employees->from}}</td>
+  <td >{{$employees->to}}</td>
+  <td >{{$employees->by}}</td>
+  <td >{{$employees->purpose}}</td>
+   <td >{{$employees->taka}}</td>
+   <td ><img style="height:50px;width:300px" src= "{{url('/images')}}/{{$employees->profile_image}}"> </td>
  </tr>
  
  

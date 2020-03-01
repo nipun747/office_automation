@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<form action="{{url('/conveyance_submit')}}" method="post">
+<form  enctype="multipart/form-data" action="{{url('/conveyance_submit')}}" method="post">
 	@csrf
 	
 
@@ -29,9 +29,7 @@
         <div class="col-lg-6">
         <div class="form-group">
            <label for="from">From:</label>
-         <div class="input-group date">
-      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="date" class="form-control has-feedback-left" id="from" 
-           placeholder="YYYY-MM-DD" name="from">
+          <input type="text" name="from" class="form-control">
         </div>
       </div>
     </div>
@@ -41,16 +39,13 @@
         <div class="col-lg-6">
         <div class="form-group">
           <label for="to">To:</label>
-          <div class="input-group date">
-      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="date" class="form-control has-feedback-left" id="to" 
-           placeholder="YYYY-MM-DD" name="to">
-        </div>
+          <input type="text" name="to" class="form-control">
       </div>
     </div>
       <div class="col-lg-6">
         <div class="form-group">
           <label for="by">By:</label>
-          <input type="text" name="from" class="form-control">
+          <input type="text" name="by" class="form-control">
         </div>
       </div>
     </div>
@@ -67,6 +62,11 @@
           <input type="text" name="taka" class="form-control">
         </div>
       </div>
+    </div>
+    <div class="form-group">
+        <label for="profile_image">Image</label>
+        <input  name="profile_image" type="file" id="imageInput">
+        <img class="col-sm-6" id="preview"  src="">
     </div>
  
 <!-- <div class="col-lg-6">
@@ -111,7 +111,10 @@
   <input type="text" name="approved_by">
 </div>
 </div> -->
+</div>
+    <div class="form-group text-center">
   <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
 </body>
 </form>
 

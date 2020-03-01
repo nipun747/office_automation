@@ -1,4 +1,5 @@
-<html>
+@extends('layouts.app')
+@section('content')
 
  <style>
 table, th, td {
@@ -12,51 +13,71 @@ table, th, td {
   <table style="width:100%"
  >
  <tr>
-  <th style="text-align:left;" colspan="8" width="100%">Employee Name:</th>
+  <th >Employee Name:</th>
   <th colspan="14">@if(session()->has('employee_name')) 
                      {{ Session::get('employee_name') }}@endif</th>
  </tr>
  <tr>
-  <th colspan="4" width="20%">Date</th>
-  <th colspan="4" width="20%">From</th>
-  <th colspan="4" width="20%">To</th>
-  <th colspan="4" width="20%">By</th>
-  <th colspan="4" width="20%">Purpose</th>
-  <th colspan="4" width="20%">Taka</th>
- 
+   
+  <th >Date</th>
+  <th >From</th>
+  <th >To</th>
+  <th >By</th>
+  <th >Purpose</th>
+  <th >Taka</th>
+ <th>action</th>
  </tr>
- 
-  <!--  @foreach($conveyance as $employees)
- 
+@foreach($conveyance as $employees)
   <tr>
-  
-  <td colspan="4" width="20%">{{$employees->date}}</td>
-  <td colspan="4" width="20%">{{$employees->from}}</td>
-  <td colspan="4" width="20%">{{$employees->to}}</td>
-  <td colspan="4" width="20%">{{$employees->by}}</td>
-  <td colspan="4" width="20%">{{$employees->purpose}}</td>
-   <td colspan="4" width="20%">{{$employees->taka}}</td>
- </tr>
  
-  @endforeach
-   @if($conveyance->status == 1)
-    <td class="action_td{{$conveyance->id}}"><a onclick="acceptReject_duty({{$conveyance->id}},1)"><i  class="fa fa-check"></i></a><a onclick="acceptReject_duty({{$conveyance->id}},0)"> <i class="fa fa-times"></i></a>
+  <td >{{$employees->date}}</td>
+  <td >{{$employees->from}}</td>
+  <td >{{$employees->to}}</td>
+  <td >{{$employees->by}}</td>
+  <td >{{$employees->purpose}}</td>
+   <td >{{$employees->taka}}</td>
+   @if($employees->status == 1)
+    <td class="action_td{{$employees->id}}"><a onclick="conveyance_function({{$employees->id}},1)"><i  class="fa fa-check"></i></a><a onclick="conveyance_function({{$employees->id}},0)"> <i class="fa fa-times"></i></a>
     </td>
-    @elseif($status->status == 2)
+    @elseif($employees->status == 2)
     <td><span class="label label-primary">Accepted</span></td>
-     @else($status->status == 3)
+     @else($employees->status == 3)
     <td><span class="label label-danger">Rejected</span></td>
     @endif
-    
-  </tr> -->
-  
+ </tr>
  
-</table>
-<br><br><br><br>
-<p><b><u>Received by</u></b></p><br><br>
-  <p><b><u>Prepared by</u></b></p><br><br>
+ 
+ @endforeach
+ 
+</table><br><br><br><br>
+<p><b><u>Received by:</u></b></p><br><br>
+  <p><b><u>Prepared by:</u>@if(session()->has('employee_name')) 
+                     {{ Session::get('employee_name') }}@endif</b></p><br><br>
   <p><b><u>Checked by</u></b></p><br><br>
   <p><b><u>Approved by</u></b></p><br><br>
 
 </body>
-</html>
+@endsection
+@section('js')
+<script type="text/javascript">
+  function conveyance_function(id,status){    
+  
+    $.ajax({
+      url: "{{url('/conveyancefunction')}}",
+      type: 'GET',
+      data: {id:id,status:status},
+      success: function(response) {
+            if(response == 2){
+              $('.action_td'+id).html('');
+              $('.action_td'+id).html('<span class="label label-primary">Accepted</span>');
+            }else if(response == 3){
+              $('.action_td'+id).html('');
+              $('.action_td'+id).html('<span class="label label-danger">Rejected</span>');
+            }else{
+
+            }
+      }
+    });
+}
+</script>
+@endsection
