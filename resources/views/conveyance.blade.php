@@ -38,10 +38,7 @@ table, th, td {
    <td colspan="4" width="20%">{{$employees->taka}}</td>
  </tr>
  
- <tr>
-  <th style="text-align:right;" colspan="16" width="60%">Total taka=</th>
-  <td colspan="8" width="20%">{{$employees->total}}</td>
- </tr>
+ 
  
   @endforeach
  

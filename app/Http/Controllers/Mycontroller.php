@@ -742,8 +742,48 @@ class Mycontroller extends Controller
             ]);
         echo 'Inserted';
     } 
-    public function conveyance_view_received()
-    {
-      return view('conveyance_view_received');
+    public function conveyance_view_received(){
+    // { $conveyance=DB::table('conveyance')
+    //                   ->select('conveyance.*')
+    //                   ->get();
+        // $status=DB::table('conveyance_status')
+        //            ->select('conveyance_status.*')
+        //            ->get();             
+              return view('conveyance_view_received');
+      
     } 
+   //   public function viewAssignedDuty()
+   // {
+   //  $user_id = session()->get('employee_id');
+   //  $assignedDuty=DB::table('conveyance')
+   //                    ->select('leave_table.status','leave_table.leave_id','leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name','leave_categories.leave_category')
+   //                    ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
+   //                    ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
+   //                    ->where('leave_table.duty_assigned_to',$user_id )
+   //                    ->orderBy('leave_table.created','DESC')
+   //                     ->get();
+   //            return view('conveyance_view_received',['assignedDuty'=>$assignedDuty]);
+   // }
+   // public function accRejectDuty(Request $request){
+      
+      
+   //    $leave_id = $request->input('leave_id');
+   //    $status = $request->input('status');
+   //    if($status == 1){
+   //      $update_status = 2;
+   //    }else{
+   //      $update_status = 5;
+   //    }
+   //    DB::table('leave_table')
+   //        ->where('leave_id',$leave_id)
+   //        ->update(['status'=>$update_status]);
+
+   //    $employee_id=session()->get('employee_id');
+   //    DB::table('leave_log')
+   //        ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
+
+   //    return $update_status;
+
+
+   // }
 }

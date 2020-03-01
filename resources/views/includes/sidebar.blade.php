@@ -27,6 +27,7 @@
                          
                          @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
+                        <li><a href="{{url('view_employee')}}">view employee</a></li>  
                         <li><a href="{{url('department_form')}}">Department</a></li>
                         
                           
