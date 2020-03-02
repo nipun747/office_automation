@@ -401,25 +401,15 @@ class Mycontroller extends Controller
         echo 'Inserted';
     }
     public function conveyance()
-    {$employee = DB::table('conveyance')
-                ->select('name','date',
-         'from',
-          'to',
-           'by',
-            'purpose',
-             'taka','profile_image'
-              
-                
-            )
-                ->get();
-        return view('conveyance',['employee'=>$employee]);
+    {
+        return view('conveyance');
      
     }
-    public function index()
-    {
-         $pdf = PDF::loadView('conveyance');
-           return $pdf->download('conveyance.pdf');
-    }
+    // public function index()
+    // {
+    //      $pdf = PDF::loadView('conveyance');
+    //        return $pdf->download('conveyance.pdf');
+    // }
 
      public function view_pdf($leave_id)
     {
@@ -537,7 +527,8 @@ class Mycontroller extends Controller
          return view('conveyance_input');
     }
      public function conveyance_submit(Request $request){
-       $name = $request->input('name');
+       $employee_name=session()->get('employee_name');
+        $employee_id=session()->get('employee_id');
 
         $date = date('Y-m-d',strtotime($request->input('date')));
          $from = $request->input('from');
@@ -547,30 +538,21 @@ class Mycontroller extends Controller
              $taka = $request->input('taka');
               $profile_image = $request->input('profile_image');
 
-             try {
-        $this->validate($request, [
-            'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-        ]);
-    }
-    catch (\Illuminate\Validation\ValidationException $e){
-         echo "profile_image not valid";exit;
-    }
- if ( $request->hasFile('profile_image')){
+            
+        
+        if ( $request->hasFile('profile_image')){
                 if ($request->file('profile_image')->isValid()){
                     $file = $request->file('profile_image');
                     $profile_image = $file->getClientOriginalName();
                     $file->move('images' , $profile_image);
                     $inputs = $request->all();
                     $inputs['path'] = $profile_image;
-                }
-                else{
-                   
-                }
+                }                
             }
               
         DB::table('conveyance')->insert(
-            [
-            'name' => $name,
+            ['employee_id'=>$employee_id,
+            'name' => $employee_name,
         'date' => $date,
          'from' => $from,
           'to' => $to,
@@ -610,10 +592,11 @@ class Mycontroller extends Controller
         
 
         $employee=DB::table('employees')
-              ->select('employee_id','employee_code','employee_name',
-                'employee_email','department_table.department','designation_table.designation','is_line_manager','profile_image','signature')
+              ->select('employees.employee_id','employees.employee_code','employees.employee_name',
+                'employees.employee_email','department_table.department','designation_table.designation','employees.is_line_manager','employees.profile_image','employees.signature','line_manager.employee_name as line_manager_name')
                ->join('department_table', 'department_table.department_id', '=', 'employees.department')
                 ->join('designation_table', 'designation_table.designation_id', '=', 'employees.designation')
+                ->join('employees as line_manager','employees.line_manager_id', '=', 'line_manager.employee_id')
               ->get();
               // dd($catagory);
 
@@ -650,10 +633,8 @@ class Mycontroller extends Controller
                 'line_manager'=>$line_manager]);
       }
       public function updateEmployee(Request $request){
-        //echo "hi"; exit;
-        //dd('hi');
-         //$employee=employee::find($employee_code);
-          $employee_code = $request->input('employee_code');
+       
+        $employee_code = $request->input('employee_code');
         $employee_email = $request->input('employee_email');
         $employee_name = $request->input('employee_name');
         $designation =$request->input('designation');
@@ -664,54 +645,35 @@ class Mycontroller extends Controller
         $password = $request->input('password');
         $is_line_manager = $request->input('is_line_manager');
         $status = $request->input('status');
-       
+
+        $user_data = collect(\DB::select("SELECT profile_image ,signature
+                                        FROM `employees` 
+                                        WHERE employee_code = '$employee_code'"))->first();
+       $profile_image = $user_data->profile_image;
+       $signature = $user_data->signature;
+
         if ($status !=1 ) $status=0;
-        try {
-        $this->validate($request, [
-            'profile_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-        ]);
-    }
-    catch (\Illuminate\Validation\ValidationException $e){
-         echo "profile_image not valid";exit;
-    }
-
-    try {
-        $this->validate($request, [
-            'signature' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-        ]);
-    }
-    catch (\Illuminate\Validation\ValidationException $e){
-         echo "signature not valid";exit;
-    }
-
-
-
-
-             if ( $request->hasFile('profile_image')){
+        
+        if ( $request->hasFile('profile_image')){
                 if ($request->file('profile_image')->isValid()){
                     $file = $request->file('profile_image');
                     $profile_image = $file->getClientOriginalName();
                     $file->move('images' , $profile_image);
                     $inputs = $request->all();
                     $inputs['path'] = $profile_image;
-                }
-                else{
-                   
-                }
+                }                
             }
 
-             if ( $request->hasFile('signature')){
-                if ($request->file('signature')->isValid()){
-                    $file = $request->file('signature');
-                    $signature = $file->getClientOriginalName();
-                    $file->move('images' , $signature);
-                    $inputs = $request->all();
-                    $inputs['path'] = $signature;
-
-                    
-                
-                }
-            }
+       if ( $request->hasFile('signature')){
+          if ($request->file('signature')->isValid()){
+              $file = $request->file('signature');
+              $signature = $file->getClientOriginalName();
+              $file->move('images' , $signature);
+              $inputs = $request->all();
+              $inputs['path'] = $signature;           
+          
+          }
+      }
 
 
         //dd($status);
@@ -728,10 +690,8 @@ class Mycontroller extends Controller
             'signature' => $signature,            
             'status' => $status
             ]);
-          // ->where('employee_code', $employee_code->employee_code)
-          //        ->update(['active' => true]);
-    //     }
-        return redirect('/view_employee');
+          
+        return redirect('/view_employee')->with('success','Profile Updated Successfully!');
     }
      public function leave_log()
     {
@@ -830,14 +790,20 @@ class Mycontroller extends Controller
     public function conveyance_view_received()
     {
 
-      // $user_id = session()->get('employee_id');
-      $conveyance=[];
+        $line_id = session()->get('employee_id');
+       //dd($line_id);
+
+
+      //$conveyance=[];
      $conveyance= DB::table('conveyance')
-                      ->select('conveyance.status','name','conveyance.date','to','by','purpose','taka','received_by','prepared_by','checked_by','approved_by','conveyance_status.conveyance_status')
+                      ->select('conveyance.status','conveyance.id','name','from','date',
+                                'to','by','purpose','taka','conveyance.employee_id','employees.employee_id','employees.line_manager_id','employees.is_line_manager')
                       ->join('conveyance_status', 'conveyance_status.conveyance_status_id', '=', 'conveyance.status')
                        ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
-                      ->first();
-      // dd($conveyance);
+                      // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                       ->where('employees.line_manager_id',$line_id )
+                      ->get();
+     
              return view('conveyance_view_received',['conveyance'=>$conveyance]);
     }
 
@@ -875,7 +841,22 @@ class Mycontroller extends Controller
 
 
    // }
-    public function conveyancefunction(Request $request){
+    
+    public function conveyance_for_received()
+   {
+    $line_id = session()->get('employee_id');
+    $conveyance=DB::table('conveyance')
+                      ->select('conveyance.status','conveyance.id','name','from',
+                                'to','by','purpose','taka','conveyance.employee_id','employees.employee_id','employees.line_manager_id')
+                      ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                      ->join('conveyance_status', 'conveyance.status', '=', 'conveyance_status.conveyance_status_id')
+                         ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                      //->where('employees.line_manager_id',$line_id )
+                      
+                       ->get();
+              return view('conveyance_view_received',['conveyance'=> $conveyance]);
+   }
+   public function conveyancefunction(Request $request){
       
       
       $id = $request->input('id');
@@ -883,12 +864,11 @@ class Mycontroller extends Controller
       if($status == 1){
         $update_status = 2;
       }else{
-        $update_status = 3;
+        $update_status = 5;
       }
       DB::table('conveyance')
           ->where('id',$id)
           ->update(['status'=>$update_status]);
-
 
       // $employee_id=session()->get('employee_id');
       // DB::table('leave_log')
@@ -898,4 +878,48 @@ class Mycontroller extends Controller
 
 
    }
+   public function conveyance_pdf($id)
+    {
+
+       $conveyance= DB::table('conveyance')
+                      ->select('status','name','from','id','conveyance.date','to','by','purpose','taka','received_by','prepared_by','employee_id','checked_by','approved_by','profile_image')
+                      ->where('id', $id)
+                       //->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                       //->where('employees.line_manager_id',$line_id )
+                     ->first()->employee_id;
+
+                 
+     
+
+      $leave_details = collect(\DB::SELECT("SELECT
+              employees.employee_name,
+              conveyance.id,
+              conveyance.name,
+              conveyance.date,
+              conveyance.from,
+              conveyance.to,
+              conveyance.by,
+              conveyance.purpose,
+              conveyance.taka,
+              conveyance.profile_image,
+              conveyance.`status`,
+              line_manager.signature AS line_manager_signature,
+              employees.signature AS applicant_signature
+              FROM
+              conveyance
+              INNER JOIN employees ON employees.employee_id = conveyance.employee_id
+              INNER JOIN employees AS line_manager ON employees.line_manager_id = line_manager.employee_id
+              INNER JOIN department_table ON employees.department = department_table.department_id
+              INNER JOIN designation_table ON employees.designation = designation_table.designation_id
+              INNER JOIN conveyance_status ON conveyance.status = conveyance_status.conveyance_status_id
+              WHERE conveyance.id = $id
+              "))->first();
+
+      
+      
+      $pdf = PDF::loadView('conveyance',[
+        'conveyance'=>$conveyance,'leave_details'=>$leave_details]);
+      return $pdf->download('conveyance of '.$leave_details->employee_name.'.pdf');
+      //return view('conveyance',['conveyance'=>$conveyance,'leave_details'=>$leave_details]);
+    }
 }

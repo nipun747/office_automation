@@ -16,11 +16,14 @@ i{
   cursor: pointer;
 }
 </style>
-</head>
-<body>
- <h2>Leave</h2>
+<link href="{{ asset('assets/css/plugins/dataTables/datatables.min.css')}}" rel="stylesheet">
+   
+        <div class="col-sm-4">
+            <h2>Employee list</h2>
+        </div>
+  
 
-<table class="table table-striped">
+<table class="table table-striped dataTables-example">
    <tr>
     <th>Employee Code</th>    
     <th>Designation</th>    
@@ -44,13 +47,28 @@ i{
 
     <td>{{$employee->employee_email}}</td>
     <td>{{$employee->department}}</td>
-    <td></td>
+    <td>{{$employee->line_manager_name}}</td>
    
     <td>{{$employee->is_line_manager}}</td>
-    <td><img style="height:40px;width:100px" src= "{{url('/images')}}/{{$employee->profile_image}}"></td>
+    <td><img class="rounded-circle pp_img" style="height:30px;width:30px" src= "{{url('/images')}}/{{$employee->profile_image}}"></td>
     <td><img style="height:40px;width:100px" src= "{{url('/images')}}/{{$employee->signature}}"></td>
     <td><a href="{{url('/edit')}}/{{$employee->employee_code}}" class="btn btn-warning">Edit</a></td>
   </tr>
   @endforeach
 </table>
+
 @endsection
+@section('js')
+<script src="{{ asset('assets/js/plugins/dataTables/datatables.min.js')}}"></script>
+    <script src="{{ asset('assets/js/plugins/dataTables/dataTables.bootstrap4.min.js')}}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.dataTables-example').DataTable({
+                pageLength: 10,
+                responsive: true,
+                order: []
+            });
+
+        });
+    </script>
+    @endsection

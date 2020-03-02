@@ -3,22 +3,27 @@
 
  <style>
 table, th, td {
-  border: 1px solid black;
-   border-collapse:collapse;
+  border-collapse: collapse;
 }
-</style> 
-
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+table#t01 {
+  width: 100%;    
+  background-color: #f1f1c1;
+}
+i{
+  cursor: pointer;
+}
+</style>
 <body >
   <h3 style="text-align: center;">Conveyance Sheet</h3>
-  <table style="width:100%"
- >
- <tr>
-  <th >Employee Name:</th>
-  <th colspan="14">@if(session()->has('employee_name')) 
-                     {{ Session::get('employee_name') }}@endif</th>
- </tr>
- <tr>
-   
+  <table class="table table-striped">
+ 
+  <tr> 
+
+    <th >Employee Name:</th>
   <th >Date</th>
   <th >From</th>
   <th >To</th>
@@ -26,10 +31,11 @@ table, th, td {
   <th >Purpose</th>
   <th >Taka</th>
  <th>action</th>
+ <th>Download</th>
  </tr>
 @foreach($conveyance as $employees)
   <tr>
- 
+ <td>{{$employees->name}}</td>
   <td >{{$employees->date}}</td>
   <td >{{$employees->from}}</td>
   <td >{{$employees->to}}</td>
@@ -41,20 +47,16 @@ table, th, td {
     </td>
     @elseif($employees->status == 2)
     <td><span class="label label-primary">Accepted</span></td>
-     @else($employees->status == 3)
+     @else($employees->status == 5)
     <td><span class="label label-danger">Rejected</span></td>
     @endif
+     <td><a href="{{url('/conveyance_pdf')}}/{{$employees->id}}"><i class = "fa fa-download"></i><a></td>
  </tr>
  
  
  @endforeach
  
-</table><br><br><br><br>
-<p><b><u>Received by:</u></b></p><br><br>
-  <p><b><u>Prepared by:</u>@if(session()->has('employee_name')) 
-                     {{ Session::get('employee_name') }}@endif</b></p><br><br>
-  <p><b><u>Checked by</u></b></p><br><br>
-  <p><b><u>Approved by</u></b></p><br><br>
+</table>
 
 </body>
 @endsection
@@ -63,14 +65,15 @@ table, th, td {
   function conveyance_function(id,status){    
   
     $.ajax({
-      url: "{{url('/conveyancefunction')}}",
+      url: "{{url('/conveyance_function')}}",
       type: 'GET',
       data: {id:id,status:status},
       success: function(response) {
+        console.log(response);
             if(response == 2){
               $('.action_td'+id).html('');
               $('.action_td'+id).html('<span class="label label-primary">Accepted</span>');
-            }else if(response == 3){
+            }else if(response == 5){
               $('.action_td'+id).html('');
               $('.action_td'+id).html('<span class="label label-danger">Rejected</span>');
             }else{
@@ -80,4 +83,5 @@ table, th, td {
     });
 }
 </script>
+
 @endsection

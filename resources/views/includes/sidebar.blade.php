@@ -60,7 +60,7 @@
                     <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Conveyance Panel</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
 
-                           <li><a href="{{url('conveyance')}}">conveyance pdf</a></li>
+                           <li><a href="{{url('conveyance_view_received')}}">conveyance pdf</a></li>
                            <li><a href="{{url('conveyance_input')}}">conveyance input</a></li>
                         
                         

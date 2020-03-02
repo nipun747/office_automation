@@ -83,17 +83,26 @@
   </div>
 </div>
 </div>
-   
-    <div class="form-group">
-        <label for="imageInput">Profile Image</label>
-        <input  name="input_img" type="file" id="imageInput">
-        <img class="col-sm-6" id="preview"  src="">
-    </div>
-   
-   <div class="form-group ">
-        <label for="signatureinput">Signature</label>
-        <input  name="input_signature" type="file" >
-        <img class="col-sm-6" id="preview"  src="">
+   <div class="col-lg-12 row">
+      <div class="form-group col-lg-6">
+         <label>Profile Image</label>
+        <div class="custom-file">
+            <input id="logo" name="input_img" type="file" class="custom-file-input" onchange="set_image(this);">
+            <label for="logo" class="custom-file-label">Choose file...</label>
+        </div>
+      <!-- </div>
+     <div class="col-lg-6" style="background-color: white;text-align: center;vertical-align: middle"> -->
+          <img class="change_img" id="image_preview" style="display: block; height: 300px;width: 350px"  src="{{url('/')}}/images/pp_images/img_avatar.png"  alt="Memo Image" />
+      </div>
+
+     <div class="form-group ">
+          <label>Signature</label>
+        <div class="custom-file">
+            <input id="logo" name="input_signature" type="file" class="custom-file-input" onchange="set_signature(this);">
+            <label for="logo" class="custom-file-label">Choose file...</label>
+        </div>
+           <img class="change_img" id="sig_preview" style="display: block; height: 50px;width: 350px"  src="{{url('/')}}/images/pp_images/Signature.png"  alt="Memo Image" />
+      </div>
     </div>
     <div class="form-group text-center">
   <button type="submit" class="btn btn-primary">Submit</button>
@@ -116,4 +125,40 @@
         });
     });
 </script>
+<script>
+        $('.custom-file-input').on('change', function() {
+            let fileName = $(this).val().split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+        });
+        function set_image(input){
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#image_preview')
+                        .attr('src', e.target.result)
+                        .width(350)
+                        .height(300);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+                $('#image_preview').show();
+            }
+        }
+        function set_signature(input){          
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#sig_preview')
+                        .attr('src', e.target.result)
+                        .width(350)
+                        .height(50);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+                $('#sig_preview').show();
+            }
+        }
+    </script>
 @endsection

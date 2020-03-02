@@ -1,53 +1,76 @@
 <html>
-<a href="{{url('index')}}">Convert into PDF</a>
- <style>
+  <style>
 table, th, td {
   border: 1px solid black;
    border-collapse:collapse;
+   text-align: center;
+}
+.signTable th,.signTable td{
+  border: 0px !important;
 }
 </style> 
+<body>
+<h2>Conveyance Sheet</h2>
+        
+<h4>Employee Name : {{$leave_details->name}}</h4>
 
-<body >
-  <h3 style="text-align: center;">Conveyance Sheet</h3>
-  <table style="width:100%"
- >
- <tr>
-  <th style="text-align:left;" width="100%">Employee Name:</th>
-  <th colspan="14">@if(session()->has('employee_name')) 
-                     {{ Session::get('employee_name') }}@endif</th>
- </tr>
- <tr>
-  <th >Date</th>
-  <th >From</th>
-  <th >To</th>
-  <th >By</th>
-  <th >Purpose</th>
-  <th >Taka</th>
- <th >Profile Image</th>
- </tr>
+<table width="100%" > 
+  <tr>
+  <th colspan="1">Date</th>
+  <th colspan="1" >From</th>
+  <th colspan="1" >To</th>
+  <th colspan="1">By</th>
+  <th colspan="1">Purpose</th>
+  <th colspan="1">Taka</th>
  
-   @foreach($employee as $employees)
- 
+ </tr>
   <tr>
   
-  <td >{{$employees->date}}</td>
-  <td >{{$employees->from}}</td>
-  <td >{{$employees->to}}</td>
-  <td >{{$employees->by}}</td>
-  <td >{{$employees->purpose}}</td>
-   <td >{{$employees->taka}}</td>
-   <td ><img style="height:50px;width:300px" src= "{{url('/images')}}/{{$employees->profile_image}}"> </td>
+  <td >{{date('d M Y',strtotime($leave_details->date))}}</td>
+  <td >{{$leave_details->from}}</td>
+  <td >{{$leave_details->to}}</td>
+  <td >{{$leave_details->by}}</td>
+  <td >{{$leave_details->purpose}}</td>
+  <td >{{$leave_details->taka}}</td>
+   
  </tr>
  
  
  
-  @endforeach
+ 
  
 </table><br><br><br><br>
-<p><b><u>Received by</u></b></p><br><br>
-  <p><b><u>Prepared by</u></b></p><br><br>
-  <p><b><u>Checked by</u></b></p><br><br>
-  <p><b><u>Approved by</u></b></p><br><br>
+<table class="signTable" style="width: 100%;border:0px !important;">
+  <tr>
+    <td>
+      <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->applicant_signature}}">
+    </td>
+    <td>
+      <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->applicant_signature}}"></td>
+      <td>
+     @if($leave_details->status>1 && $leave_details->status<5)
+      <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->line_manager_signature}}">@endif
+    </td>
+    <td>
+      <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->applicant_signature}}">
+    </td>
+  </tr>
+  <tr>
+    <td>---------------------------</td>
+    <td>---------------------------</td>
+    <td>---------------------------</td>
+    <td>---------------------------</td>
+  </tr>
 
+  <tr>
+    <th>Received by : </th>
+    <th>Prepared By :</th>
+    <th>Checked by : </th>
+    <th>Approved by : </th>
+  </tr>
+</table>
+<br>
+<h4><u>Attachment</u></h4>
+<img style="height:200px;width:150px" src="{{url('/images')}}/{{$leave_details->profile_image}}">
 </body>
 </html>

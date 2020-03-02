@@ -67,3 +67,4 @@ Route::get('/leave_log','Mycontroller@leave_log');
 Route::get('conveyance_view_received','Mycontroller@conveyance_view_received');
 Route::get('conveyance_function','Mycontroller@conveyancefunction');
 Route::get('conveyance_for_received','Mycontroller@conveyance_for_received');
+Route::get('conveyance_pdf/{id}','Mycontroller@conveyance_pdf');
