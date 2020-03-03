@@ -48,7 +48,6 @@ table, th, td {
     <td>
       <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->applicant_signature}}"></td>
       <td>
-      
      @if($leave_details->status>1 && $leave_details->status<5)
       <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->line_manager_signature}}">@endif
     </td>

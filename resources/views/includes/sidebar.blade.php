@@ -47,7 +47,7 @@
                           
                            <li><a href="{{url('hrviewLeave')}}">HR view leave</a></li>
                           <li><a href="{{url('viewPendingLeave')}}">Line Manager View Leave</a></li>
-                          <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave/pdf</a></li>
+                          <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave</a></li>
 
                           
                            <li><a href="{{url('leave_log')}}">Leave Log</a></li>
@@ -60,7 +60,8 @@
                     <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Conveyance Panel</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
 
-                           <li><a href="{{url('conveyance_view_received')}}">conveyance pdf</a></li>
+                           <li><a href="{{url('conveyance_view_received')}}">conveyance checked by Line Manager</a></li>
+                           <li><a href="{{url('conveyance_view_received_md')}}">conveyance approved by HR</a></li>
                            <li><a href="{{url('conveyance_input')}}">conveyance input</a></li>
                         
                         

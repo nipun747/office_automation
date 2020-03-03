@@ -65,7 +65,7 @@
     </div>
    <div class="col-lg-12 row">
       <div class="form-group col-lg-6">
-         <label>Profile Image</label>
+         <label>Attachment</label>
         <div class="custom-file">
             <input id="logo" name="profile_image" type="file" class="custom-file-input" onchange="set_image(this);">
             <label for="logo" class="custom-file-label">Choose file...</label>

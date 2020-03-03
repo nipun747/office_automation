@@ -68,3 +68,7 @@ Route::get('conveyance_view_received','Mycontroller@conveyance_view_received');
 Route::get('conveyance_function','Mycontroller@conveyancefunction');
 Route::get('conveyance_for_received','Mycontroller@conveyance_for_received');
 Route::get('conveyance_pdf/{id}','Mycontroller@conveyance_pdf');
+Route::get('conveyance_view_received_md','Mycontroller@conveyance_view_received_md');
+Route::get('mdfunctionagain','Mycontroller@mdfunctionagain');
+Route::get('mdfunction_again','Mycontroller@mdfunction_again');
+Route::get('conveyance_for_employee','Mycontroller@conveyance_for_employee');

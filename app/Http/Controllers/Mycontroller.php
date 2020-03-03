@@ -870,9 +870,9 @@ class Mycontroller extends Controller
           ->where('id',$id)
           ->update(['status'=>$update_status]);
 
-      // $employee_id=session()->get('employee_id');
-      // DB::table('leave_log')
-      //     ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
+       $employee_id=session()->get('employee_id');
+       DB::table('conveyance_log')
+          ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
 
       return $update_status;
 
@@ -904,11 +904,15 @@ class Mycontroller extends Controller
               conveyance.profile_image,
               conveyance.`status`,
               line_manager.signature AS line_manager_signature,
-              employees.signature AS applicant_signature
+              employees.signature AS applicant_signature,
+               hr.signature AS hr_signature
               FROM
               conveyance
               INNER JOIN employees ON employees.employee_id = conveyance.employee_id
               INNER JOIN employees AS line_manager ON employees.line_manager_id = line_manager.employee_id
+               
+              INNER JOIN employees AS hr ON 1=1 AND hr.department = 3
+              
               INNER JOIN department_table ON employees.department = department_table.department_id
               INNER JOIN designation_table ON employees.designation = designation_table.designation_id
               INNER JOIN conveyance_status ON conveyance.status = conveyance_status.conveyance_status_id
@@ -917,9 +921,120 @@ class Mycontroller extends Controller
 
       
       
-      $pdf = PDF::loadView('conveyance',[
+     $pdf = PDF::loadView('conveyance',[
         'conveyance'=>$conveyance,'leave_details'=>$leave_details]);
       return $pdf->download('conveyance of '.$leave_details->employee_name.'.pdf');
       //return view('conveyance',['conveyance'=>$conveyance,'leave_details'=>$leave_details]);
+    }
+    public function conveyance_view_received_md()
+    {
+      $line_id = session()->get('employee_id');
+       //dd($line_id);
+
+
+      //$conveyance=[];
+     $conveyance= DB::table('conveyance')
+                      ->select('conveyance.status','conveyance.id','name','from','date',
+                                'to','by','purpose','taka','conveyance.employee_id','employees.employee_id','employees.line_manager_id','employees.is_line_manager')
+                      ->join('conveyance_status', 'conveyance_status.conveyance_status_id', '=', 'conveyance.status')
+                       ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                      // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                       //->where('employees.line_manager_id',$line_id )
+                      ->get();
+     
+            
+      return view('conveyance_view_received_md',['conveyance'=>$conveyance]);
+    }
+    public function mdfunction() 
+   {
+    
+    $line_id = session()->get('employee_id');
+    $conveyance=DB::table('conveyance')
+                      ->select('conveyance.status','conveyance.id','name','from',
+                                'to','by','purpose','taka','conveyance.employee_id','employees.employee_id','employees.line_manager_id')
+                      ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                      ->join('conveyance_status', 'conveyance.status', '=', 'conveyance_status.conveyance_status_id')
+                         ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                      //->where('employees.line_manager_id',$line_id )
+                      
+                       ->get();
+              
+
+                        //dd($lineDuty[0]->status);
+              return view('conveyance_view_received_md',['conveyance'=> $conveyance]);
+              // return view('employees.lineleave_view_form',['lineDuty'=>$lineDuty]);
+   }
+    public function mdfunctionagain(Request $request){
+      
+      $id = $request->input('id');
+      $status = $request->input('status');
+      if($status == 1){
+        $update_status = 3;
+      }else{
+        $update_status = 5;
+      }
+      DB::table('conveyance')
+          ->where('id',$id)
+          ->update(['status'=>$update_status]);
+
+      $employee_id=session()->get('employee_id');
+       DB::table('conveyance_log')
+          ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
+
+      // DB::table('leave_log')
+      //     ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
+
+      return $update_status;
+
+      
+  
+}
+public function conveyance_for_employee()
+    {    $line_id = session()->get('employee_id');
+
+     
+ $conveyance= DB::table('conveyance')
+                      ->select('conveyance.status','name','from','id','conveyance.date','to','by','purpose','taka','received_by','prepared_by','conveyance.employee_id','checked_by','approved_by','conveyance.profile_image','employees.employee_id')
+                      //->where('id', $id)
+                       ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                       ->where('employees.employee_id',$line_id )
+                     ->first();
+                 
+     
+
+      $leave_details = collect(\DB::SELECT("SELECT
+              employees.employee_name,
+              conveyance.id,
+              conveyance.name,
+              conveyance.date,
+              conveyance.from,
+              conveyance.to,
+              conveyance.by,
+              conveyance.purpose,
+              conveyance.taka,
+              conveyance.profile_image,
+              conveyance.`status`,
+              line_manager.signature AS line_manager_signature,
+              employees.signature AS applicant_signature,
+               hr.signature AS hr_signature
+              FROM
+              conveyance
+              INNER JOIN employees ON employees.employee_id = conveyance.employee_id
+              INNER JOIN employees AS line_manager ON employees.line_manager_id = line_manager.employee_id
+               
+              INNER JOIN employees AS hr ON 1=1 AND hr.department = 3
+              
+              INNER JOIN department_table ON employees.department = department_table.department_id
+              INNER JOIN designation_table ON employees.designation = designation_table.designation_id
+              INNER JOIN conveyance_status ON conveyance.status = conveyance_status.conveyance_status_id
+              WHERE conveyance.id = id
+              "))->first();
+
+      
+      
+      // $pdf = PDF::loadView('conveyance',[
+      //   'conveyance'=>$conveyance,'leave_details'=>$leave_details]);
+      // return $pdf->download('conveyance of '.$leave_details->employee_name.'.pdf');
+      return view('conveyance_for_employee',['conveyance'=>$conveyance,'leave_details'=>$leave_details]);
     }
 }
