@@ -1037,4 +1037,32 @@ public function conveyance_for_employee()
       // return $pdf->download('conveyance of '.$leave_details->employee_name.'.pdf');
       return view('conveyance_for_employee',['conveyance'=>$conveyance,'leave_details'=>$leave_details]);
     }
+    public function my_conveyance()
+    {
+       $line_id = session()->get('employee_id');
+       //dd($line_id);
+
+
+      //$conveyance=[];
+     $conveyance= DB::table('conveyance')
+                      ->select('conveyance.status','conveyance.id','name','from','date',
+                                'to','by','purpose','taka','conveyance.employee_id','employees.employee_id','employees.line_manager_id','employees.is_line_manager')
+                      ->join('conveyance_status', 'conveyance_status.conveyance_status_id', '=', 'conveyance.status')
+                       ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                      // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                       ->where('employees.employee_id',$line_id )
+                      ->get();
+     
+             
+     
+//     $user = DB::table('users')->where('name', 'John')->first();
+
+// echo $user->name;
+             
+      return view('my_conveyance',['conveyance'=>$conveyance]);
+    }
+    public function conveyance_log()
+    {
+      return view ('conveyance_log');
+    }
 }

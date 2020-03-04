@@ -4,6 +4,7 @@
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element">
+                        
                         <img alt="image" class="rounded-circle" src="{{asset('assets/img/profile_small.jpg')}}"/>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="block m-t-xs font-bold">David Williams</span>
@@ -63,6 +64,7 @@
                            <li><a href="{{url('conveyance_view_received')}}">conveyance checked by Line Manager</a></li>
                            <li><a href="{{url('conveyance_view_received_md')}}">conveyance approved by HR</a></li>
                            <li><a href="{{url('conveyance_input')}}">conveyance input</a></li>
+                           <li><a href="{{url('my_conveyance')}}">My conveyance</a></li>
                         
                         
                     </ul>
