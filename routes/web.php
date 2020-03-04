@@ -74,3 +74,5 @@ Route::get('mdfunction_again','Mycontroller@mdfunction_again');
 Route::get('conveyance_for_employee','Mycontroller@conveyance_for_employee');
 Route::get('my_conveyance','Mycontroller@my_conveyance');
 Route::get('conveyance_log/{conveyance_id}','Mycontroller@conveyance_log');
+Route::get('profile','Mycontroller@profile');
+Route::get('update_image','Mycontroller@update_image');

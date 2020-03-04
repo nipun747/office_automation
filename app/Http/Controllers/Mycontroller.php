@@ -258,7 +258,7 @@ class Mycontroller extends Controller
         
 
         $employee = DB::table('employees')
-                ->select('employee_id','employee_name','designation','department','line_manager_id','employee_email')
+                ->select('employee_id','employee_name','designation','department','line_manager_id','employee_email','profile_image')
                 ->where('employee_email', $employee_email)
                 ->where('password', $password)
                 ->get();
@@ -270,6 +270,7 @@ class Mycontroller extends Controller
             Session::put('line_manager_id', $employee[0]->line_manager_id);
             Session::put('employee_email', $employee[0]->employee_email);
             Session::put('employee_id', $employee[0]->employee_id);
+            Session::put('profile_image', $employee[0]->profile_image);
 
             //$request->session()->flush();
 
@@ -1064,5 +1065,47 @@ public function conveyance_for_employee()
     public function conveyance_log()
     {
       return view ('conveyance_log');
+    }
+    public function profile()
+    {
+       $profile_image = session()->get('profile_image');
+
+       //dd($line_id);
+
+       // $profile_image = DB::table('employees')
+       //        ->select('employees.profile_image')
+       //       ->where('employees.employee_id',$line_id )
+       //        ->first()->profile_image;
+              // dd($profile_image);
+      return view ('profile',['profile_image'=>$profile_image]);
+    }
+    public function update_image()
+    {
+      $user_data = collect(\DB::select("SELECT profile_image 
+                                        FROM `employees` 
+                                        WHERE employee_code = '$employee_code'"))->first();
+       $profile_image = $user_data->profile_image;
+       
+
+        if ($status !=1 ) $status=0;
+        
+        if ( $request->hasFile('profile_image')){
+                if ($request->file('profile_image')->isValid()){
+                    $file = $request->file('profile_image');
+                    $profile_image = $file->getClientOriginalName();
+                    $file->move('images' , $profile_image);
+                    $inputs = $request->all();
+                    $inputs['path'] = $profile_image;
+                }                
+            }
+            DB::table('employees')
+         ->where('employee_code', $employee_code)
+         ->update(
+            [
+            
+            'profile_image' => $profile_image
+           
+            ]);
+            return redirect('/profile')->with('success','Profile Updated Successfully!');
     }
 }
