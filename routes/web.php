@@ -75,4 +75,6 @@ Route::get('conveyance_for_employee','Mycontroller@conveyance_for_employee');
 Route::get('my_conveyance','Mycontroller@my_conveyance');
 Route::get('conveyance_log/{conveyance_id}','Mycontroller@conveyance_log');
 Route::get('profile','Mycontroller@profile');
-Route::get('update_image','Mycontroller@update_image');
+Route::post('update_image','Mycontroller@update_image');
+Route::get('edit_profile/{employee_code?}','Mycontroller@edit_profile');
+Route::get('change_password/{employee_code?}','Mycontroller@change_password');

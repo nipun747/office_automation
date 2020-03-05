@@ -1068,44 +1068,52 @@ public function conveyance_for_employee()
     }
     public function profile()
     {
-       $profile_image = session()->get('profile_image');
+       $employee_id = session()->get('employee_id');
 
        //dd($line_id);
 
-       // $profile_image = DB::table('employees')
-       //        ->select('employees.profile_image')
-       //       ->where('employees.employee_id',$line_id )
-       //        ->first()->profile_image;
-              // dd($profile_image);
+       $profile_image = DB::table('employees')
+              ->select('employees.profile_image')
+             ->where('employees.employee_id',$employee_id )
+              ->first()->profile_image;
+             // dd($profile_image);
       return view ('profile',['profile_image'=>$profile_image]);
     }
-    public function update_image()
+    public function update_image(Request $request)
     {
-      $user_data = collect(\DB::select("SELECT profile_image 
-                                        FROM `employees` 
-                                        WHERE employee_code = '$employee_code'"))->first();
-       $profile_image = $user_data->profile_image;
-       
+      $employee_id = session()->get('employee_id');
+       $password =  md5($request->input('password'));
 
-        if ($status !=1 ) $status=0;
-        
+        $profile_image = $request->input('profile_image');
+
         if ( $request->hasFile('profile_image')){
                 if ($request->file('profile_image')->isValid()){
                     $file = $request->file('profile_image');
                     $profile_image = $file->getClientOriginalName();
                     $file->move('images' , $profile_image);
-                    $inputs = $request->all();
-                    $inputs['path'] = $profile_image;
                 }                
             }
-            DB::table('employees')
-         ->where('employee_code', $employee_code)
-         ->update(
-            [
-            
-            'profile_image' => $profile_image
-           
-            ]);
-            return redirect('/profile')->with('success','Profile Updated Successfully!');
+
+      DB::table('employees')->where('employee_id', $employee_id)->update(array('profile_image' => $profile_image,'password' => $password));
+
+      return redirect('/profile')->with('success','Profile Updated Successfully!');
     }
+    public function edit_profile($employee_code = 'nai')
+      {
+        $profile_image=DB::table('employees')
+              ->select('profile_image','password')
+               // ->join('department_table', 'department_table.department_id', '=', 'employees.department')
+               //  ->join('designation_table', 'designation_table.designation_id', '=', 'employees.designation')
+                ->where('employee_code',$employee_code)
+              ->first();
+
+
+              // dd($employee);
+        return view('edit_profile',['profile_image' =>$profile_image
+              ]);
+      }
+      public function change_password()
+      {
+        return view('change_password');
+      }
 }
