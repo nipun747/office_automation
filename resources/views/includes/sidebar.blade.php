@@ -26,11 +26,12 @@
                     <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Employee Panel</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                          
-                         @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li> @endif
+                        @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li>@endif 
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
                         <li><a href="{{url('view_employee')}}">view employee</a></li>  
                         <li><a href="{{url('department_form')}}">Department</a></li>
-                        
+                         <li><a href="{{url('profile')}}">Update Profile</a></li> 
+                        <li><a href="{{url('password')}}">Change Password</a></li> 
                           
 
                           <li><a href="{{url('designation_form')}}">Designation</a></li>    

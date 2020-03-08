@@ -9,6 +9,7 @@ use DB;
 use DateTime;
 use Session;
 use PDF;
+use Mail;
 class Mycontroller extends Controller
 {
     /**
@@ -200,7 +201,13 @@ class Mycontroller extends Controller
                 }
             }
 
-
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 10; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        
         
         DB::table('employees')->insert(
             ['employee_code' => $employee_code,
@@ -211,9 +218,20 @@ class Mycontroller extends Controller
             'line_manager_id' => $line_manager_id,
             'profile_image' => $name,
             'signature' => $signature,
-            'password' => $password,
+            'password' => md5($randomString),
             'is_line_manager' => $is_line_manager
             ]);
+
+        $text = 'A new account has been created for you in Apsis Automation. <br> Please Login with following credentials.<br>Email : '.$employee_email.'<br>Password : '.$randomString.'.<br>If you face any problem feel free to contact HRD section.<br>Best Regards<br>HRD Section<br>Apsis Solutions Ltd.';
+
+        $data = array('name'=>$employee_name,'employee_email'=>$employee_email,'employee_name'=>$employee_name,'text'=>$text);
+   
+        Mail::send('mail', $data, function($message) use ($data) {
+           $message->to($data['employee_email'], $data['employee_name'])->subject
+              ('New Account Created');
+           $message->from('xyz@gmail.com','Apsis HRD');
+        });
+
         echo 'Inserted';
     }
 
@@ -260,7 +278,7 @@ class Mycontroller extends Controller
         $employee = DB::table('employees')
                 ->select('employee_id','employee_name','designation','department','line_manager_id','employee_email','profile_image')
                 ->where('employee_email', $employee_email)
-                ->where('password', $password)
+                ->where('password', md5($password))
                 ->get();
         if(count($employee) > 0){
 
@@ -278,7 +296,7 @@ class Mycontroller extends Controller
                 echo  Session::get('employee_name', $employee[0]->employee_name);
             }
             //exit;
-            return view('dashboard');
+            return redirect('/');
         }
         else{
              return view('login');
@@ -321,7 +339,7 @@ class Mycontroller extends Controller
     }
     public function logout(Request $request){
         $request->session()->flush();
-       return view('dashboard');
+       return redirect('login');
     }
 
     public function store(Request $request)
@@ -1094,7 +1112,7 @@ public function conveyance_for_employee()
                 }                
             }
 
-      DB::table('employees')->where('employee_id', $employee_id)->update(array('profile_image' => $profile_image,'password' => $password));
+      DB::table('employees')->where('employee_id', $employee_id)->update(array('profile_image' => $profile_image));
 
       return redirect('/profile')->with('success','Profile Updated Successfully!');
     }
@@ -1116,4 +1134,18 @@ public function conveyance_for_employee()
       {
         return view('change_password');
       }
+       public function password()
+    {
+     
+      return view ('password');
+    }
+    public function update_password(Request $request)
+    {
+      $employee_id = session()->get('employee_id');
+       $password =  md5($request->input('password'));
+
+DB::table('employees')->where('employee_id', $employee_id)->update(array('password' => $password));
+
+      return redirect('/')->with('success','Password Updated Successfully!');
+    }
 }
