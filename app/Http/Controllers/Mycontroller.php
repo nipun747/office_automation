@@ -602,7 +602,7 @@ class Mycontroller extends Controller
          'from' => $from,
           'to' => $to,
            'by' => $by,
-            'purpose' => $date,
+            'purpose' => $purpose,
              'taka'=> $taka,
               'profile_image'=>$profile_image
                 
