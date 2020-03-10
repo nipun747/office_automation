@@ -15,7 +15,7 @@ class employeeController extends Controller
                       ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
                       ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
                       ->where('leave_table.duty_assigned_to',$user_id )
-                      ->orderBy('leave_table.created','DESC')
+                      ->orderBy('leave_table.leave_id','DESC')
                        ->get();
               return view('employees.leave_view_form',['assignedDuty'=>$assignedDuty]);
    }
@@ -50,6 +50,7 @@ class employeeController extends Controller
                       ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
                       ->join('leave_status_table','leave_table.status','=','leave_status_table.leave_status_id')
                       ->where('employees.line_manager_id',$line_id )
+                      ->orderBy('leave_table.leave_id', 'desc')
                        ->get();
 
                         // dd($lineDuty[0]->status);
@@ -79,17 +80,26 @@ class employeeController extends Controller
 	}
 public function hrviewLeave() 
    {
-   	$line_id = session()->get('employee_id');
-   	$hrlineDuty=DB::table('leave_table')
+   	$employee_id = session()->get('employee_id');
+
+   	$designation = DB::table('employees')
+                      ->select('designation')
+                       ->where('employees.employee_id',$employee_id )
+                       ->first()->designation;
+    $hrlineDuty = [];
+    if($designation == 13){
+      $hrlineDuty=DB::table('leave_table')
                       ->select('leave_table.status','leave_table.leave_id','leave_table.catagory','leave_type','start_date','end_date','leave_applied','reason','remarks','duty_assigned_to','employees.employee_name','leave_categories.leave_category','leave_status_table.leave_status','leave_status_table.next_status')
                       ->join('employees', 'employees.employee_id', '=', 'leave_table.employee_id')
                       ->join('leave_categories', 'leave_table.catagory', '=', 'leave_categories.leave_category_id')
                       ->join('leave_status_table','leave_table.status','=','leave_status_table.leave_status_id')
-                      // ->where('employees.employee_id',$line_id )
+                      ->orderBy('leave_table.leave_id', 'desc')
                        ->get();
+    }
+    
 
                         //dd($lineDuty[0]->status);
-              return view('leave_view_form',['hrlineDuty'=>$hrlineDuty]);
+              return view('hr_leave_view_form',['hrlineDuty'=>$hrlineDuty]);
               // return view('employees.lineleave_view_form',['lineDuty'=>$lineDuty]);
    }
     public function hrlineacceptRejectDuty(Request $request){

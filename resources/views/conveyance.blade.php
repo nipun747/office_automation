@@ -43,7 +43,9 @@ table, th, td {
 <table class="signTable" style="width: 100%;border:0px !important;">
   <tr>
     <td>
+    @if($leave_details->status==4)
       <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->applicant_signature}}">
+    @endif
     </td>
     <td>
       <img style="height:20px;width:50px" src="{{url('/images')}}/{{$leave_details->applicant_signature}}"></td>

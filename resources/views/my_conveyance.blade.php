@@ -23,7 +23,7 @@ i{
  
   <tr> 
 
-    <th >Employee Name:</th>
+  <th >Employee Name:</th>
   <th >Date</th>
   <th >From</th>
   <th >To</th>
@@ -42,8 +42,54 @@ i{
   <td >{{$employees->to}}</td>
   <td >{{$employees->by}}</td>
   <td >{{$employees->purpose}}</td>
-   <td >{{$employees->taka}}</td>
+  <td >{{$employees->taka}}</td>
+  @if($employees->status == 3)
+    <td class="action_td{{$employees->id}}"><a onclick="my_conveyance({{$employees->id}},1)"><i  class="fa fa-check"></i></a><a onclick="my_conveyance({{$employees->id}},0)"> <i class="fa fa-times"></i></a>
+    </td>
+    @elseif($employees->status == 4)
+    <td><span class="label label-primary">Received</span></td>
+     @elseif($employees->status == 5)
+    <td><span class="label label-danger">Rejected</span></td>
+    @else
+    <td>-</td>
+    @endif
+    
+  <td><a href="{{url('conveyance_log')}}/{{$employees->id}}"> <button class="btn btn-w-m btn-info">view </button></a> </td>
+     <td><a href="{{url('/conveyance_pdf')}}/{{$employees->id}}"><i class = "fa fa-download"></i><a></td>
+ </tr>
+ 
+ @endforeach
+ 
+</table>
+
+</body>
+@endsection
+@section('js')
+<script type="text/javascript">
+  function my_conveyance(id,status){    
   
+    $.ajax({
+      url: "{{url('/myconveyance')}}",
+      type: 'GET',
+      data: {id:id,status:status},
+      success: function(response) {
+        console.log(response);
+            if(response == 4){
+              $('.action_td'+id).html('');
+              $('.action_td'+id).html('<span class="label label-primary">Received</span>');
+            }else if(response == 5){
+              $('.action_td'+id).html('');
+              $('.action_td'+id).html('<span class="label label-danger">Rejected</span>');
+            }else{
+
+            }
+      }
+    });
+}
+</script>
+
+@endsection
+  <!-- 
     @if($employees->status>= 1 && $employees->status<=2)
     <td><span class="label label-primary">On hold</span></td>
     @elseif($employees->status == 3)
@@ -54,11 +100,9 @@ i{
     <td><a href="{{url('conveyance_log')}}/{{$employees->id}}"> <button class="btn btn-w-m btn-info">view </button></a> </td>
      <td><a href="{{url('/conveyance_pdf')}}/{{$employees->id}}"><i class = "fa fa-download"></i><a></td>
  </tr>
+  -->
  
- 
- @endforeach
- 
-</table>
 
-</body>
-@endsection
+ 
+
+

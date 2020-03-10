@@ -4,6 +4,10 @@
 table, th, td {
   border: 1px solid black;
    border-collapse:collapse;
+   text-align: center;
+}
+.signTable th,.signTable td{
+  border: 0px !important;
 }
 </style> 
 
@@ -35,11 +39,39 @@ table, th, td {
   
  </tr>
  @endforeach
- 
-</table><br><br><br><br>
-<p><b><u>Received by</u></b></p><br><br>
-  <p><b><u>Prepared by</u></b></p><br><br>
-  <p><b><u>Checked by</u></b></p><br><br>
-  <p><b><u>Approved by</u></b></p><br><br>
+  </table><br><br><br><br>
+
+<table class="signTable" style="width: 100%;border:0px !important;">
+  <tr>
+    <td>
+    
+    </td>
+    <td>
+      </td>
+      <td>
+      
+    
+    </td>
+    <td>
+     
+    </td>
+  </tr>
+  <tr>
+    <td>---------------------------</td>
+    <td>---------------------------</td>
+    <td>---------------------------</td>
+    <td>---------------------------</td>
+  </tr>
+
+  <tr>
+    <th>Received by : </th>
+    <th>Prepared By :</th>
+    <th>Checked by : </th>
+    <th>Approved by : </th>
+  </tr>
+</table>
+<br>
+<h4><u>Attachment</u></h4>
+
 </body>
 </html>

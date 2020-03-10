@@ -30,14 +30,14 @@
             <p>Login in. To see it in action.</p>
             <form class="m-t" role="form" action="index.html">
                 <div class="form-group">
-                    <input type="text" name="employee_email" class="form-control" placeholder="Usercode" required="">
+                    <input type="text" name="employee_email" class="form-control" placeholder="Email" required="">
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" class="form-control" placeholder="Password" required="">
                 </div>
                 <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
 
-                <a href="#"><small>Forgot password?</small></a>
+               <!-- <a href="#"><small>Forgot password?</small></a> -->
                
                 
             </form>

@@ -66,6 +66,9 @@ class Mycontroller extends Controller
     }
     public function leave_form()
     {
+        $employee_id=session()->get('employee_id');
+        //echo $employee_id;
+
         $catagories = DB::table('leave_categories')
                             ->select('leave_categories.*')
                             ->where('status',1)
@@ -73,7 +76,10 @@ class Mycontroller extends Controller
      $employee_names = DB::table('employees')
                      ->select('employees.*')
                             ->where('status',1)
+                            ->where('employee_id','<>',$employee_id)
                             ->get();
+
+                            //dd($employee_names);
         
         return view('leave_form',['catagories'=>$catagories,'employee_names'=>$employee_names]);
     }
@@ -104,7 +110,7 @@ class Mycontroller extends Controller
             'employee_id'=>$employee_id        
             ]);
         
-      Session()->flash('flash_message', 'Leave Submitted successfully!');
+      Session()->flash('Success', 'Leave Submitted successfully!');
       return redirect('/leave_form');
     }
 
@@ -276,7 +282,7 @@ class Mycontroller extends Controller
         
 
         $employee = DB::table('employees')
-                ->select('employee_id','employee_name','designation','department','line_manager_id','employee_email','profile_image')
+                ->select('employee_id','employee_name','designation','department','line_manager_id','is_line_manager','employee_email','profile_image')
                 ->where('employee_email', $employee_email)
                 ->where('password', md5($password))
                 ->get();
@@ -289,6 +295,7 @@ class Mycontroller extends Controller
             Session::put('employee_email', $employee[0]->employee_email);
             Session::put('employee_id', $employee[0]->employee_id);
             Session::put('profile_image', $employee[0]->profile_image);
+            Session::put('is_line_manager', $employee[0]->is_line_manager);
 
             //$request->session()->flush();
 
@@ -358,6 +365,7 @@ class Mycontroller extends Controller
   }
   public function leave()
   {
+     
      $designations = DB::table('designation_table')
                             ->select('designation_table.*')
                             ->where('status',1)
@@ -376,9 +384,11 @@ class Mycontroller extends Controller
                             ->where('status',1)
                             ->get();
          $employee_names = DB::table('employees')
-                     ->select('employees.*')
-                            ->where('status',1)
-                            ->get();
+                          ->select('employees.*')
+                          ->where('status',1)
+                          
+                          ->get();
+                          dd($employee_names);
         return view('leave',
             ['designations'=>  $designations,
                 'departments' => $departments,
@@ -438,14 +448,18 @@ class Mycontroller extends Controller
                 ->where('leave_id', $leave_id)
                 ->first()->employee_id;
 
+             
+
                  
       $leave_categories = DB::table('leave_categories')
                 ->select('leave_category_id','leave_category','available_days')
                 ->get(); 
 
+     
+
       $leave_count = collect(\DB::SELECT("SELECT
               leave_table.catagory,
-                count(leave_table.catagory) as count
+                IFNULL(SUM(leave_table.leave_applied),0) as count
                 FROM
                 leave_table
                 WHERE
@@ -453,6 +467,7 @@ class Mycontroller extends Controller
                 AND leave_table.`status` = 4
                 GROUP BY leave_table.catagory
                 "))->first();
+      //dd($leave_count);
 
       $leave_details = collect(\DB::SELECT("SELECT
               employees.employee_name,
@@ -488,21 +503,29 @@ class Mycontroller extends Controller
               INNER JOIN leave_categories ON leave_table.catagory = leave_categories.leave_category_id
               WHERE leave_table.leave_id = $leave_id
               "))->first();
+      
 
       $available_leave_array = [];
       foreach ($leave_categories as $leave) {
-        $available_leave_array[$leave->leave_category_id] = $leave->available_days;
+        //if(!empty($leave_count)){
+          $available_leave_array[$leave->leave_category_id] = $leave->available_days;
+        //}
+        
       }
 
+//dd($leave_categories);
       $availed_leave_array = [];
-      $availed_leave_array[$leave_count->catagory] = $leave_count->count;
+      if(!empty($leave_count)){
+          $availed_leave_array[$leave_count->catagory] = $leave_count->count;
+        }
+      
       
       $pdf = PDF::loadView('view',[
         'leave_details'=>$leave_details,
         'available_leave_array'=>$available_leave_array,
         'availed_leave_array'=>$availed_leave_array]);
 
-     return $pdf->download('view.pdf');
+     return $pdf->download('Leave form of '.$leave_details->employee_name.'.pdf');
       //return view('view',['leave_details'=>$leave_details,'available_leave_array'=>$available_leave_array,
       //'availed_leave_array'=>$availed_leave_array]);
     }
@@ -548,6 +571,7 @@ class Mycontroller extends Controller
      public function conveyance_submit(Request $request){
        $employee_name=session()->get('employee_name');
         $employee_id=session()->get('employee_id');
+        $is_line_manager=session()->get('is_line_manager');
 
         $date = date('Y-m-d',strtotime($request->input('date')));
          $from = $request->input('from');
@@ -557,8 +581,8 @@ class Mycontroller extends Controller
              $taka = $request->input('taka');
               $profile_image = $request->input('profile_image');
 
-            
-        
+            $status='1';
+        $is_line_manager== $status='2';
         if ( $request->hasFile('profile_image')){
                 if ($request->file('profile_image')->isValid()){
                     $file = $request->file('profile_image');
@@ -572,6 +596,8 @@ class Mycontroller extends Controller
         DB::table('conveyance')->insert(
             ['employee_id'=>$employee_id,
             'name' => $employee_name,
+            'status' => $status,
+            
         'date' => $date,
          'from' => $from,
           'to' => $to,
@@ -581,7 +607,7 @@ class Mycontroller extends Controller
               'profile_image'=>$profile_image
                 
             ]);
-        echo 'Inserted';
+       return view('conveyance_input')->with('Success','Leave Inserted Successfully');
     }
      public function debit_submit(Request $request){
         $particulars = $request->input('particulars');
@@ -714,41 +740,26 @@ class Mycontroller extends Controller
     }
      public function leave_log()
     {
-      $leave_details=DB::table('leave_table')
-              ->select('leave_id','leave_status_table.leave_status','leave_table.created','employees.employee_id','employees.employee_name')
-               ->leftJoin('employees', 'employees.employee_id', '=', 'leave_table.employee_id', 'employees.employee_name', '=', 'leave_table.employee_id')
-               ->join('leave_status_table', 'leave_status_table.leave_status_id', '=', 'leave_table.status')
-               
-              ->get();
+      $employee_id = session()->get('employee_id');
+      $leave_details= DB::SELECT(DB::RAW("SELECT
+          leave_categories.leave_category,
+          leave_table.start_date,
+          leave_table.end_date,
+          leave_table.leave_applied,
+          leave_table.leave_type,
+          leave_table.reason,
+          `user`.employee_name,
+          CASE WHEN leave_log.`status` = 1 THEN 'Accepted' ELSE 'Rejected' END AS leave_status
+          FROM
+          leave_log
+          INNER JOIN leave_table ON leave_log.leave_id = leave_table.leave_id
+          INNER JOIN employees AS `user` ON leave_log.user_id = `user`.employee_id
+          INNER JOIN leave_categories ON leave_table.catagory = leave_categories.leave_category_id
+          WHERE leave_table.employee_id = $employee_id "));
 
-      //$data['leave_details'] = $leave_details;
-      //dd($leave_details);
-
-     //$pdf = PDF::loadView('view',['leave_details'=>$leave_details]);
-           //return $pdf->download('view.pdf');
       return view('leave_log',['leave_details' =>$leave_details]);
     }
-    //      DB::table('employees')
-    //      ->where('active', false)
-    //      ->chunkById(100, function ($employee_code) {
-    //     foreach ($employee_code as $employee_code) {
-    //         DB::table('employees')
-    //             ->where('employee_code', $employee_code->employee_code)
-    //             ->update(['active' => true]);
-    //     }
-    //     dd();
-    // });
-        //  $employee=employee::find($employee_code);
-        // $employee->employee_code = $request->get('employee_code');
-        // $employee->employee_email = $request->get('employee_email');
-        // $employee->employee_name = $request->get('employee_name');
-        // $employee->designation =$request->get('designation');
-        // $employee->department = $request->get('department');
-        // $employee->line_manager_id = $request->get('line_manager_id');
-        // $employee->password = $request->get('password');
-        // $employee->is_line_manager = $request->get('is_line_manager');
-        // $employee->save();
-        // return redirect()-route('employees_form')->with('success','Data Updated');
+   
     public function leave_log_submit(Request $request){
             
         $employee_id=session()->get('employee_id');
@@ -822,6 +833,7 @@ class Mycontroller extends Controller
                       // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
                        ->where('employees.line_manager_id',$line_id )
                       ->get();
+
      
              return view('conveyance_view_received',['conveyance'=>$conveyance]);
     }
@@ -873,6 +885,7 @@ class Mycontroller extends Controller
                       //->where('employees.line_manager_id',$line_id )
                       
                        ->get();
+
               return view('conveyance_view_received',['conveyance'=> $conveyance]);
    }
    public function conveyancefunction(Request $request){
@@ -889,12 +902,12 @@ class Mycontroller extends Controller
           ->where('id',$id)
           ->update(['status'=>$update_status]);
 
-       $employee_id=session()->get('employee_id');
-       DB::table('conveyance_log')
-          ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
+             $employee_id=session()->get('employee_id');
+                  DB::table('conveyance_log')
+                  ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
 
-      return $update_status;
-
+                return $update_status;
+      
 
    }
    public function conveyance_pdf($id)
@@ -906,9 +919,6 @@ class Mycontroller extends Controller
                        //->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
                        //->where('employees.line_manager_id',$line_id )
                      ->first()->employee_id;
-
-                 
-     
 
       $leave_details = collect(\DB::SELECT("SELECT
               employees.employee_name,
@@ -938,8 +948,6 @@ class Mycontroller extends Controller
               WHERE conveyance.id = $id
               "))->first();
 
-      
-      
      $pdf = PDF::loadView('conveyance',[
         'conveyance'=>$conveyance,'leave_details'=>$leave_details]);
       return $pdf->download('conveyance of '.$leave_details->employee_name.'.pdf');
@@ -959,9 +967,10 @@ class Mycontroller extends Controller
                        ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
                       // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
                        //->where('employees.line_manager_id',$line_id )
+                       ->orderBy('conveyance.id','DESC')
                       ->get();
      
-            
+     
       return view('conveyance_view_received_md',['conveyance'=>$conveyance]);
     }
     public function mdfunction() 
@@ -989,6 +998,32 @@ class Mycontroller extends Controller
       $status = $request->input('status');
       if($status == 1){
         $update_status = 3;
+      }else{
+        $update_status = 5;
+      }
+      DB::table('conveyance')
+          ->where('id',$id)
+          ->update(['status'=>$update_status]);
+
+      $employee_id=session()->get('employee_id');
+                  DB::table('conveyance_log')
+                  ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
+
+                return $update_status;
+      // DB::table('leave_log')
+      //     ->insert(['user_id'=>$employee_id,'leave_id'=>$leave_id,'status'=>$status]);
+
+      return $update_status;
+
+      
+  
+}
+ public function myconveyance(Request $request){
+      
+      $id = $request->input('id');
+      $status = $request->input('status');
+      if($status == 1){
+        $update_status = 4;
       }else{
         $update_status = 5;
       }
@@ -1058,10 +1093,8 @@ public function conveyance_for_employee()
     }
     public function my_conveyance()
     {
-       $line_id = session()->get('employee_id');
-       //dd($line_id);
-
-
+       $employee_id = session()->get('employee_id');
+      
       //$conveyance=[];
      $conveyance= DB::table('conveyance')
                       ->select('conveyance.status','conveyance.id','name','from','date',
@@ -1069,20 +1102,34 @@ public function conveyance_for_employee()
                       ->join('conveyance_status', 'conveyance_status.conveyance_status_id', '=', 'conveyance.status')
                        ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
                       // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
-                       ->where('employees.employee_id',$line_id )
+                       ->where('employees.employee_id',$employee_id )
+                       ->orderBy('conveyance.id','DESC')
                       ->get();
-     
-             
-     
-//     $user = DB::table('users')->where('name', 'John')->first();
-
-// echo $user->name;
-             
-      return view('my_conveyance',['conveyance'=>$conveyance]);
+     return view('my_conveyance',['conveyance'=>$conveyance]);
     }
     public function conveyance_log()
     {
-      return view ('conveyance_log');
+      $employee_id = session()->get('employee_id');
+      $conveyance= DB::SELECT(DB::RAW("SELECT
+         
+          conveyance_log.created,
+          conveyance_log.status,
+          conveyance_log.user_id,
+          conveyance_log.conveyance_id,
+          user.employee_name,
+          CASE WHEN conveyance_log.`status` = 1 THEN 'Accepted' ELSE 'Rejected'
+
+           END AS conveyance_status
+          FROM
+          conveyance_log
+          INNER JOIN conveyance ON conveyance_log.conveyance_id = conveyance.id
+          INNER JOIN employees AS user ON conveyance_log.user_id = `user`.employee_id
+          INNER JOIN conveyance_status ON conveyance_log.status = conveyance_status.conveyance_status_id
+          WHERE conveyance.employee_id = $employee_id "));
+      // dd($conveyance);
+
+      return view('conveyance_log',['conveyance' =>$conveyance]);
+     
     }
     public function profile()
     {

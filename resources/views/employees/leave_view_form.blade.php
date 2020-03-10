@@ -46,12 +46,12 @@ i{
     <td>{{$catagory->leave_applied}}</td>
     <td>{{$catagory->reason}}</td>
     <td>{{$catagory->remarks}}</td>
-    @if($catagory->status == 1)
+      @if($catagory->status == 1)
     <td class="action_td{{$catagory->leave_id}}"><a onclick="acceptReject_duty({{$catagory->leave_id}},1)"><i  class="fa fa-check"></i></a><a onclick="acceptReject_duty({{$catagory->leave_id}},0)"> <i class="fa fa-times"></i></a>
     </td>
-    @elseif($catagory->status == 2)
+      @elseif($catagory->status > 1 || $catagory->status < 5)
     <td><span class="label label-primary">Accepted</span></td>
-     @else($catagory->status == 5)
+      @else
     <td><span class="label label-danger">Rejected</span></td>
     @endif
     <td><a href="{{url('/view_pdf')}}/{{$catagory->leave_id}}"><i class = "fa fa-download"></i><a></td>

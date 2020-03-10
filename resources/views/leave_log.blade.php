@@ -3,35 +3,36 @@
 
  <style>
 table, th, td {
-  border: 1px solid black;
    border-collapse:collapse;
    text-align: center;
 }
 </style> 
 
-<body style="width:90%">
   <h3 style="text-align:center;">Leave Log</h3>
- <table> 
+ <table class="table table-striped"> 
   
  <tr>
-  <th width="20%">User Id</th>
-  <th  width="20%">Leave Id</th>
-  
+  <th>Leave Category</th>
+  <th>Start Date</th>
+  <th>End Date</th>
+  <th>Applied Days</th>
+  <th>Leave Type</th>
+  <th>Reason</th>
+  <th>Employee Name</th>
   <th>Status</th>
-  <th>Created</th>
-  
- 
  </tr>
- @foreach($leave_details as $employees)
+ @foreach($leave_details as $leave)
  <tr>
-  <td>{{$employees->employee_name}}</td>
-  <td>{{$employees->leave_id}}</td>
-  <td>{{$employees->leave_status}}</td>
-  <td >{{$employees->created}}</td>
+    <td>{{$leave->leave_category}}</td>
+    <td>{{$leave->start_date}}</td>
+    <td>{{$leave->end_date}}</td>
+    <td>{{$leave->leave_applied}}</td>
+    <td>{{$leave->leave_type}}</td>
+    <td>{{$leave->reason}}</td>
+    <td>{{$leave->employee_name}}</td>
+    <td>{{$leave->leave_status}}</td>
 
  </tr>
- 
-
  @endforeach
  </table>
  @endsection

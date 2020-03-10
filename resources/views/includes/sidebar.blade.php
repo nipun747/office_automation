@@ -3,12 +3,12 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-                    <div class="dropdown profile-element">
+                    <div class="dropdown profile-element" style ="text-align:center">
                         
-                        <img alt="image" class="rounded-circle" src="{{asset('assets/img/profile_small.jpg')}}"/>
+                        <img alt="image" style = "width:50px;height:50px" class="rounded-circle" src="{{asset('images/')}}/{{session()->get('profile_image')}}"/>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="block m-t-xs font-bold">David Williams</span>
-                            <span class="text-muted text-xs block">Art Director <b class="caret"></b></span>
+                            <span class="block m-t-xs font-bold">{{session()->get('employee_name')}}</span>
+                            <span class="text-muted text-xs block"> </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a class="dropdown-item" href="profile.html">Profile</a></li>
@@ -29,32 +29,26 @@
                         @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li>@endif 
                         <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
                         <li><a href="{{url('view_employee')}}">view employee</a></li>  
-                        <li><a href="{{url('department_form')}}">Department</a></li>
+                         <li><a href="{{url('department_form')}}">Department</a></li>
                          <li><a href="{{url('profile')}}">Update Profile</a></li> 
                         <li><a href="{{url('password')}}">Change Password</a></li> 
                           
 
-                          <li><a href="{{url('designation_form')}}">Designation</a></li>    
+                         <li><a href="{{url('designation_form')}}">Designation</a></li> 
                       
                            
                         
                     </ul>
                 </li>
                 <li>
-                     <li class="active">
+                    <li class="active">
                     <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Leave Panel</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li><a href="{{url('leave_form')}}">Leave form</a></li>
-                         
-                          
-                           <li><a href="{{url('hrviewLeave')}}">HR view leave</a></li>
-                          <li><a href="{{url('viewPendingLeave')}}">Line Manager View Leave</a></li>
-                          <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave</a></li>
-
-                          
-                           <li><a href="{{url('leave_log')}}">Leave Log</a></li>
-                           <li><a href="{{url('leave')}}">Leave</a></li>
-                        
+                        <li><a href="{{url('hrviewLeave')}}">HR view leave</a></li>
+                        <li><a href="{{url('viewPendingLeave')}}">Line Manager View Leave</a></li>
+                        <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave</a></li>
+                        <li><a href="{{url('leave_log')}}">Leave Log</a></li>                                               
                     </ul>
                 </li>
                 <li>

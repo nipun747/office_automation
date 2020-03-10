@@ -45,9 +45,9 @@ i{
    @if($employees->status == 1)
     <td class="action_td{{$employees->id}}"><a onclick="conveyance_function({{$employees->id}},1)"><i  class="fa fa-check"></i></a><a onclick="conveyance_function({{$employees->id}},0)"> <i class="fa fa-times"></i></a>
     </td>
-    @elseif($employees->status == 2)
+    @elseif($employees->status == 2 || $employees->status == 3)
     <td><span class="label label-primary">Accepted</span></td>
-     @else($employees->status == 5)
+     @elseif($employees->status == 5)
     <td><span class="label label-danger">Rejected</span></td>
     @endif
      <td><a href="{{url('/conveyance_pdf')}}/{{$employees->id}}"><i class = "fa fa-download"></i><a></td>

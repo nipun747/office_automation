@@ -47,8 +47,10 @@ i{
     </td>
     @elseif($employees->status == 3)
     <td><span class="label label-primary">Accepted</span></td>
-     @else($employees->status == 5)
+     @elseif($employees->status == 5)
     <td><span class="label label-danger">Rejected</span></td>
+    @else
+    <td>-</td>
     @endif
      <td><a href="{{url('/conveyance_pdf')}}/{{$employees->id}}"><i class = "fa fa-download"></i><a></td>
  </tr>
