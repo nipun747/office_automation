@@ -73,6 +73,8 @@ Route::get('mdfunctionagain','Mycontroller@mdfunctionagain');
 Route::get('mdfunction_again','Mycontroller@mdfunction_again');
 Route::get('my_conveyance','Mycontroller@myconveyance');
 Route::get('myconveyance','Mycontroller@myconveyance');
+Route::get('debit_view_line','Mycontroller@debit_view_line');
+Route::get('debit_function','Mycontroller@debit_function');
 Route::get('conveyance_for_employee','Mycontroller@conveyance_for_employee');
 Route::get('my_conveyance','Mycontroller@my_conveyance');
 Route::get('conveyance_log/{conveyance_id}','Mycontroller@conveyance_log');
@@ -85,6 +87,8 @@ Route::get('change_password/{employee_code?}','Mycontroller@change_password');
 Route::get('sendbasicemail','MailController@basic_email');
 Route::get('sendhtmlemail','MailController@html_email');
 Route::get('sendattachmentemail','MailController@attachment_email');
+Route::get('debit_view_gm','Mycontroller@debit_view_gm');
+Route::get('debit_function_check','Mycontroller@debit_function_check');
 
 Route::get('/clear-cache', function() {
      $exitCode = Artisan::call('cache:clear');

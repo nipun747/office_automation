@@ -75,48 +75,7 @@
           <img class="change_img" id="image_preview" style="display: block; height: 300px;width: 350px"  src="{{url('/')}}/images/pp_images/img_avatar.png"  alt="Memo Image" />
       </div>
 
-<!-- <div class="col-lg-6">
-        <div class="form-group">
 
-  <label>Total taka=</label>
-  <input type="text" name="total">
- </div>
-</div>
-<div class="col-lg-6">
-        <div class="form-group">
- <label>Taka in Word:</label>
-  <input type="text" name="word">
-</div>
-</div>
-
- 
-<div class="col-lg-6">
-        <div class="form-group">
-<label>Received by</label>
-<input type="text" name="received_by">
-</div>
-</div>
-  <div class="col-lg-6">
-        <div class="form-group">
-         <label>Prepared by
-  @if(session()->has('employee_name')) 
-                     {{ Session::get('employee_name') }}@endif
-  </label> 
-</div>
-</div>
-  <div class="col-lg-6">
-        <div class="form-group">
- <label>Checked by</label>
-  <input type="text" name="checked_by">
-</div>
-</div>
-<div class="col-lg-6">
-        <div class="form-group">
-  <label>Approved by
-  </label>
-  <input type="text" name="approved_by">
-</div>
-</div> -->
 </div>
     <div class="form-group text-center">
   <button type="submit" class="btn btn-primary">Submit</button>

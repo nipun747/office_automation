@@ -610,6 +610,10 @@ class Mycontroller extends Controller
        return view('conveyance_input')->with('Success','Leave Inserted Successfully');
     }
      public function debit_submit(Request $request){
+
+ 
+      $employee_name=session()->get('employee_name');
+       $employee_id=session()->get('employee_id');
         $particulars = $request->input('particulars');
         $taka = $request->input('taka');
         $total_taka = $request->input('total_taka');
@@ -618,16 +622,30 @@ class Mycontroller extends Controller
         $prepared_by = $request->input('prepared_by');
         $checked_by = $request->input('checked_by');
         $approved_by = $request->input('approved_by');
+        $is_line_manager=session()->get('is_line_manager');
+
+        $date = date('Y-m-d',strtotime($request->input('date')));
         
+         $status='1';
+        $is_line_manager== $status='2';
+if ( $request->hasFile('profile_image')){
+                if ($request->file('profile_image')->isValid()){
+                    $file = $request->file('profile_image');
+                    $profile_image = $file->getClientOriginalName();
+                    $file->move('images' , $profile_image);
+                    $inputs = $request->all();
+                    $inputs['path'] = $profile_image;
+                }                
+            }
         DB::table('debit')->insert(
-            ['particulars' => $particulars,
+            ['employee_id'=>$employee_id,
+              'account_name'=>$employee_name,
+              'particulars' => $particulars,
             'taka' => $taka,
+            'date'=>$date,
             'total_taka' => $total_taka,
             'taka_in_word' => $taka_in_word,
-            'received_by' => $received_by,
-            'prepared_by' => $prepared_by,
-            'checked_by' => $checked_by,
-            'approved_by' => $approved_by
+            'attachment'=>$profile_image
 
             ]);
         echo 'Inserted';
@@ -1195,4 +1213,89 @@ DB::table('employees')->where('employee_id', $employee_id)->update(array('passwo
 
       return redirect('/')->with('success','Password Updated Successfully!');
     }
+    public function debit_view_line()
+    {
+      $line_id = session()->get('employee_id');
+       //dd($line_id);
+
+
+      //$conveyance=[];
+     $debit= DB::table('debit')
+                      ->select('debit.status','debit.debit_id','account_name','particulars','date',
+                                'taka','total_taka','taka_in_word','debit.employee_id','employees.employee_id','employees.line_manager_id','employees.is_line_manager')
+                      ->join('debit_status', 'debit_status.debit_status_id', '=', 'debit.status')
+                       ->join('employees', 'employees.employee_id', '=', 'debit.employee_id')
+                    // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                       ->where('employees.line_manager_id',$line_id )
+                      ->get();
+
+     
+             return view('debit_view_line',['debit'=>$debit]);
+    }
+    public function debit_function(Request $request){
+      
+      
+      $debit_id = $request->input('debit_id');
+      $status = $request->input('status');
+      if($status == 1){
+        $update_status = 2;
+      }else{
+        $update_status = 5;
+      }
+      DB::table('debit')
+          ->where('debit_id',$debit_id)
+          ->update(['status'=>$update_status]);
+
+             // $employee_id=session()->get('employee_id');
+             //      DB::table('conveyance_log')
+             //      ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
+
+                return $update_status;
+      
+
+   }
+   public function debit_view_gm()
+   {
+     //$line_id = session()->get('employee_id');
+       //dd($line_id);
+
+
+      //$conveyance=[];
+     $debit= DB::table('debit')
+                      ->select('debit.status','debit.debit_id','account_name','particulars','date',
+                                'taka','total_taka','taka_in_word','debit.employee_id','employees.employee_id','employees.line_manager_id','employees.is_line_manager')
+                      ->join('debit_status', 'debit_status.debit_status_id', '=', 'debit.status')
+                       ->join('employees', 'employees.employee_id', '=', 'debit.employee_id')
+                    // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                     //  ->where('employees.line_manager_id',$line_id )
+                     ->orderBy('debit.debit_id','DESC')
+                      ->get();
+     
+
+     
+             return view('debit_view_gm',['debit'=>$debit]);
+
+   }
+   public function debit_function_check(Request $request){
+      
+      
+      $debit_id = $request->input('debit_id');
+      $status = $request->input('status');
+      if($status == 1){
+        $update_status = 3;
+      }else{
+        $update_status = 5;
+      }
+      DB::table('debit')
+          ->where('debit_id',$debit_id)
+          ->update(['status'=>$update_status]);
+
+             // $employee_id=session()->get('employee_id');
+             //      DB::table('conveyance_log')
+             //      ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
+
+                return $update_status;
+      
+
+   }
 }

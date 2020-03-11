@@ -72,6 +72,8 @@
                        
                             <li><a href="{{url('debit')}}">debit pdf</a></li>
                              <li><a href="{{url('debit_input')}}">debit input</a></li>
+                             <li><a href="{{url('debit_view_line')}}">debit view line</a></li>
+                             <li><a href="{{url('debit_view_gm')}}">debit view gm</a></li>
                         
                     </ul>
                 </li>
