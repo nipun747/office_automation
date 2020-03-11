@@ -1298,4 +1298,51 @@ DB::table('employees')->where('employee_id', $employee_id)->update(array('passwo
       
 
    }
+   public function debit_employee()
+   {
+     //$line_id = session()->get('employee_id');
+       //dd($line_id);
+ $employee_id = session()->get('employee_id');
+
+      //$conveyance=[];
+     $debit= DB::table('debit')
+                      ->select('debit.status','debit.debit_id','account_name','particulars','date',
+                                'taka','total_taka','taka_in_word','debit.employee_id','employees.employee_id','employees.line_manager_id','employees.is_line_manager')
+                      ->join('debit_status', 'debit_status.debit_status_id', '=', 'debit.status')
+                       ->join('employees', 'employees.employee_id', '=', 'debit.employee_id')
+                    // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                      ->where('employees.employee_id',$employee_id )
+                     ->orderBy('debit.debit_id','DESC')
+                      ->get();
+     
+
+      
+      //$conveyance=[];
+   
+     
+             return view('debit_employee',['debit'=>$debit]);
+
+   }
+    public function debit_function_letscheck(Request $request){
+      
+      
+      $debit_id = $request->input('debit_id');
+      $status = $request->input('status');
+      if($status == 1){
+        $update_status = 4;
+      }else{
+        $update_status = 5;
+      }
+      DB::table('debit')
+          ->where('debit_id',$debit_id)
+          ->update(['status'=>$update_status]);
+
+             // $employee_id=session()->get('employee_id');
+             //      DB::table('conveyance_log')
+             //      ->insert(['user_id'=>$employee_id,'conveyance_id'=>$id,'status'=>$status]);
+
+                return $update_status;
+      
+
+   }
 }

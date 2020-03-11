@@ -45,7 +45,7 @@ i{
    @if($debits->status == 3)
     <td class="action_td{{$debits->debit_id}}"><a onclick="debit_function_letscheck({{$debits->debit_id}},1)"><i  class="fa fa-check"></i></a><a onclick="debit_function_letscheck({{$debits->debit_id}},0)"> <i class="fa fa-times"></i></a>
     </td>
-    @elseif($debits->status == 4)
+    @elseif( $debits->status == 4)
     <td><span class="label label-primary">Accepted</span></td>
      @elseif($debits->status == 5)
     <td><span class="label label-danger">Rejected</span></td>

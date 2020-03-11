@@ -88,7 +88,9 @@ Route::get('sendbasicemail','MailController@basic_email');
 Route::get('sendhtmlemail','MailController@html_email');
 Route::get('sendattachmentemail','MailController@attachment_email');
 Route::get('debit_view_gm','Mycontroller@debit_view_gm');
+Route::get('debit_employee','Mycontroller@debit_employee');
 Route::get('debit_function_check','Mycontroller@debit_function_check');
+Route::get('debit_function_letscheck','Mycontroller@debit_function_letscheck');
 
 Route::get('/clear-cache', function() {
      $exitCode = Artisan::call('cache:clear');
