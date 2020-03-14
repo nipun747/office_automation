@@ -50,7 +50,7 @@ i{
      @elseif($debits->status == 5)
     <td><span class="label label-danger">Rejected</span></td>
     @endif
-     <td><a href="{{url('/conveyance_pdf')}}/{{$debits->debit_id}}"><i class = "fa fa-download"></i><a></td>
+     <td><a href="{{url('/debit_pdf')}}/{{$debits->debit_id}}"><i class = "fa fa-download"></i><a></td>
  </tr>
  
  

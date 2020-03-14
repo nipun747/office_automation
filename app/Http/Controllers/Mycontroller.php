@@ -10,6 +10,8 @@ use DateTime;
 use Session;
 use PDF;
 use Mail;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class Mycontroller extends Controller
 {
     /**
@@ -541,25 +543,20 @@ class Mycontroller extends Controller
 //     }
      public function debit()
     {
-         $employee = DB::table('debit')
-                ->select('account_name','particulars',
-         'taka',
-          'total_taka',
-           'taka_in_word',
-            'received_by',
-             'prepared_by',
-              'checked_by',
-                   'approved_by'
-            )
-                ->get();
-        return view('debit',['employee'=>$employee]);
+         // $employee = DB::table('debit')
+         //        ->select('account_name','particulars',
+         // 'taka',
+         //  'total_taka',
+         //   'taka_in_word',
+         //    'received_by',
+         //     'prepared_by',
+         //      'checked_by',
+         //           'approved_by'
+         //    )
+         //        ->get();
+        return view('debit');
     }
-      public function debit_pdf()
-      {
-        $pdf = PDF::loadView('debit');
-           return $pdf->download('debit.pdf');
-
-      }
+      
       public function debit_input()
     {
          return view('debit_input');
@@ -852,7 +849,6 @@ if ( $request->hasFile('profile_image')){
                        ->where('employees.line_manager_id',$line_id )
                       ->get();
 
-     
              return view('conveyance_view_received',['conveyance'=>$conveyance]);
     }
 
@@ -1345,4 +1341,111 @@ DB::table('employees')->where('employee_id', $employee_id)->update(array('passwo
       
 
    }
+    public function debit_pdf($debit_id)
+    {
+
+       $debit= DB::table('debit')
+                      ->select('debit.status','debit.debit_id','account_name','particulars','date',
+                                'taka','total_taka','taka_in_word','debit.employee_id','debit.attachment')
+                      ->where('debit_id', $debit_id)
+                       //->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                       //->where('employees.line_manager_id',$line_id )
+                     ->first()->employee_id;
+
+      $debit_details = collect(\DB::SELECT("SELECT
+              employees.employee_name,
+              debit.debit_id,
+              debit.account_name,
+              debit.date,
+              debit.particulars,
+              debit.taka,
+              debit.total_taka,
+              debit.taka_in_word,
+              debit.taka,
+              debit.attachment,
+              debit.`status`,
+              line_manager.signature AS line_manager_signature,
+              employees.signature AS applicant_signature,
+               hr.signature AS hr_signature
+              FROM
+              debit
+              INNER JOIN employees ON employees.employee_id = debit.employee_id
+              INNER JOIN employees AS line_manager ON employees.line_manager_id = line_manager.employee_id
+               
+              INNER JOIN employees AS hr ON 1=1 AND hr.department = 3
+              
+              INNER JOIN department_table ON employees.department = department_table.department_id
+              INNER JOIN designation_table ON employees.designation = designation_table.designation_id
+              INNER JOIN debit_status ON debit.status = debit_status.debit_status_id
+              WHERE debit.debit_id = $debit_id
+              "))->first();
+
+     $pdf = PDF::loadView('debit',[
+        'debit'=>$debit,'debit_details'=>$debit_details]);
+      return $pdf->download('debit of '.$debit_details->employee_name.'.pdf');
+      //return view('conveyance',['conveyance'=>$conveyance,'leave_details'=>$leave_details]);
+    }
+    public function test_page()
+{
+  
+  
+
+  $debit= DB::table('employees')
+                      ->select('employees.employee_id','employees.line_manager_id','employees.employee_name')
+                      ->get();
+                      
+  $data = [];
+  $i = 0;
+   foreach ($debit as $key => $value) {
+      $data[$i]['employee_name'] = $value->employee_name;
+      $data[$i]['employee_id'] = $value->employee_id;
+      $data[$i]['line_manager_id'] = $value->line_manager_id;
+      $i++;
+    }
+ // dd($data);
+$spreadsheet = new Spreadsheet();
+$sheet = $spreadsheet->getActiveSheet();
+
+$header = ['employee_name','employee_id','line_manager_id'];
+$sheet->fromArray($header, null, 'A1');
+$sheet->fromArray($data, null, 'A2');
+
+//$sheet->setCellValue('A1', 'Hello World !');
+
+$writer = new Xlsx($spreadsheet);
+$time = date('Y-m-dHis');
+$file_name = "hello world ".$time;
+$writer->save($file_name.".xlsx");
+}
+ public function excels()
+{
+  $debit= DB::table('conveyance')
+                      ->select('conveyance.status','conveyance.id','name','from','date',
+                                'to','by','purpose','taka','conveyance.employee_id')
+                                 ->get();
+
+                      
+  $data = [];
+  $i = 0;
+   foreach ($debit as $key => $value) {
+      $data[$i]['status'] = $value->status;
+      $data[$i]['name'] = $value->name;
+      $data[$i]['purpose'] = $value->purpose;
+      $i++;
+    }
+ // dd($data);
+$spreadsheet = new Spreadsheet();
+$sheet = $spreadsheet->getActiveSheet();
+
+$header = ['status','name','purpose'];
+$sheet->fromArray($header, null, 'A1');
+$sheet->fromArray($data, null, 'A2');
+
+//$sheet->setCellValue('A1', 'Hello World !');
+
+$writer = new Xlsx($spreadsheet);
+$time = date('Y-m-dHis');
+$file_name = "hello world ".$time;
+$writer->save($file_name.".xlsx");
+}
 }

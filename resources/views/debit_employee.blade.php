@@ -49,8 +49,10 @@ i{
     <td><span class="label label-primary">Accepted</span></td>
      @elseif($debits->status == 5)
     <td><span class="label label-danger">Rejected</span></td>
+    @else
+    <td>-</td>
     @endif
-     <td><a href="{{url('/conveyance_pdf')}}/{{$debits->debit_id}}"><i class = "fa fa-download"></i><a></td>
+     <td><a href="{{url('/debit_pdf')}}/{{$debits->debit_id}}"><i class = "fa fa-download"></i><a></td>
  </tr>
  
  
@@ -70,7 +72,7 @@ i{
       data: {debit_id:debit_id,status:status},
       success: function(response) {
         console.log(response);
-            if(response == 3){
+            if(response == 4){
               $('.action_td'+debit_id).html('');
               $('.action_td'+debit_id).html('<span class="label label-primary">Accepted</span>');
             }else if(response == 5){
