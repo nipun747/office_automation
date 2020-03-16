@@ -22,68 +22,12 @@
                         IN+
                     </div>
                 </li>
-                <li class="active">
-                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Employee Panel</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                         
-                        @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li>@endif 
-                        <li class="active"><a href="{{url('employees_form')}}">Employees Form</a></li>
-                        <li><a href="{{url('view_employee')}}">view employee</a></li>  
-                         <li><a href="{{url('department_form')}}">Department</a></li>
-                         <li><a href="{{url('profile')}}">Update Profile</a></li> 
-                        <li><a href="{{url('password')}}">Change Password</a></li> 
-                          
-
-                         <li><a href="{{url('designation_form')}}">Designation</a></li> 
-                      
-                           
-                        
-                    </ul>
-                </li>
-                <li>
-                    <li class="active">
-                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Leave Panel</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="{{url('leave_form')}}">Leave form</a></li>
-                        <li><a href="{{url('hrviewLeave')}}">HR view leave</a></li>
-                        <li><a href="{{url('viewPendingLeave')}}">Line Manager View Leave</a></li>
-                        <li><a href="{{url('viewAssignedDuty')}}">Duty Assignee View Leave</a></li>
-                        <li><a href="{{url('leave_log')}}">Leave Log</a></li>                                               
-                    </ul>
-                </li>
-                <li>
-                  <li class="active">
-                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Conveyance Panel</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-
-                           <li><a href="{{url('conveyance_view_received')}}">conveyance checked by Line Manager</a></li>
-                           <li><a href="{{url('conveyance_view_received_md')}}">conveyance approved by HR</a></li>
-                           <li><a href="{{url('conveyance_input')}}">conveyance input</a></li>
-                           <li><a href="{{url('my_conveyance')}}">My conveyance</a></li>
-                        
-                        
-                    </ul>
-                </li>
-                <li>
-                    <li>
-                  <li class="active">
-                    <a href="index.html"><i class="fa fa-th-large"></i> <span class="nav-label">Debit Panel</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                       
-                            <li><a href="{{url('debit')}}">debit pdf</a></li>
-                             <li><a href="{{url('debit_input')}}">debit input</a></li>
-                             <li><a href="{{url('debit_view_line')}}">debit view line</a></li>
-                             <li><a href="{{url('debit_view_gm')}}">debit view gm</a></li>
-                             <li><a href="{{url('debit_employee')}}">my debit</a></li>
-                        
-                    </ul>
-                </li>
-                <li>
-                    <a href="layouts.html"><i class="fa fa-diamond"></i> <span class="nav-label">Layouts</span></a>
-                </li>
+                @if(!session()->has('employee_name'))  <li><a href="{{url('login')}}">login</a></li>@endif 
                 
-            </ul>
+               @inject('menu', 'App\Http\Controllers\Mycontroller')
+                {!! $menu->sidebar_menus() !!}
 
+            </ul>
         </div>
     </nav>
 

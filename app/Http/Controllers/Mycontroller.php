@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Http\Controllers\Controller;
+
+use App\Http\Controllers\Border;
 use Illuminate\Http\Request;
 use DB;
 use DateTime;
@@ -1447,5 +1449,202 @@ $writer = new Xlsx($spreadsheet);
 $time = date('Y-m-dHis');
 $file_name = "hello world ".$time;
 $writer->save($file_name.".xlsx");
+}
+public function task()
+{
+  $employee_names = DB::table('employees')
+                     ->select('employees.*')
+                            ->where('status',1)
+                            
+                            ->get();
+
+                            //dd($employee_names);
+        
+        return view('task',['employee_names'=>$employee_names]);
+}
+public function task_submit(Request $request){
+      
+     $employee_id=session()->get('employee_id');
+     $employee_name = $request->input('employee_name');
+     $task_name = $request->input('task_name');
+     $task_type = $request->input('task_type');
+     $date = date('Y-m-d',strtotime($request->input('date')));
+    
+     $comment = $request->input('comment');
+    
+         
+        DB::table('leave_table')->insert(
+            ['employee_id' => $employee_id,
+      'leave_type'=>$leave_type,
+      'duty_assigned_to'=>$employee,
+      'start_date'=>$start_date,
+      'end_date'=>$end_date,
+      'leave_applied'=>$leave_applied,
+      'reason'=>$reason,
+      'remarks'=>$remarks,  
+            'status'=>1   ,
+            'employee_id'=>$employee_id        
+            ]);
+        
+      Session()->flash('Success', 'Leave Submitted successfully!');
+      return redirect('/leave_form');
+    }
+
+ public function leave_log_excel()
+{
+   $employee_id = session()->get('employee_id');
+   $leave_details= DB::SELECT(DB::RAW("SELECT
+          leave_categories.leave_category,
+          leave_table.start_date,
+          leave_table.end_date,
+          leave_table.leave_applied,
+          leave_table.leave_type,
+          leave_table.reason,
+          `user`.employee_name,
+          CASE WHEN leave_log.`status` = 1 THEN 'Accepted' ELSE 'Rejected' END AS leave_status
+          FROM
+          leave_log
+          INNER JOIN leave_table ON leave_log.leave_id = leave_table.leave_id
+          INNER JOIN employees AS `user` ON leave_log.user_id = `user`.employee_id
+          INNER JOIN leave_categories ON leave_table.catagory = leave_categories.leave_category_id
+          WHERE leave_table.employee_id = $employee_id "));
+
+      
+                      
+  $data = [];
+  $i = 0;
+   foreach ($leave_details as $key => $value) {
+      $data[$i]['leave_category'] = $value->leave_category;
+      $data[$i]['start_date'] = $value->start_date;
+      $data[$i]['end_date'] = $value->end_date;
+      $data[$i]['leave_applied'] = $value->leave_applied;
+      $data[$i]['leave_type'] = $value->leave_type;
+      $data[$i]['reason'] = $value->reason;
+      $data[$i]['employee_name'] = $value->employee_name;
+      $data[$i]['leave_status'] = $value->leave_status;
+      $i++;
+    }
+ // dd($data);
+$spreadsheet = new Spreadsheet();
+$sheet = $spreadsheet->getActiveSheet();
+
+$header = ['Leave Category','Start Date','End Date','Applied Leave(days)','Leave Type','Reason','Accepted by','Status'];
+$sheet->fromArray($header, null, 'A3');
+$sheet->fromArray($data, null, 'A4');
+  $sheet->mergecells('A1:H1');
+  $sheet->setCellValue('A1', 'Hello World !');
+$sheet->getStyle('A1:H9')->getAlignment()->applyFromArray( [ 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER, 'textRotation' => 0] );
+foreach(range('A','Z') as $columnID) {
+    $sheet->getColumnDimension($columnID)->setAutoSize(true);
+}
+$sheet->getStyle('A1:H1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('2eb9d1');
+//$sheet->setCellValue('A1', 'Hello World !');
+$sheet->getStyle('A3:H3')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('d1483f');
+
+$sheet->getPageSetup()->setFitToWidth(1);
+$sheet->getPageMargins()->setTop(1);
+$sheet->getPageMargins()->setRight(0.75);
+$sheet->getPageMargins()->setLeft(0.75);
+$sheet->getPageMargins()->setBottom(1);
+$styleArray = [
+    'borders' => [
+        'outline' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+            'color' => ['argb' => 'FFFF0000'],
+        ],
+    ],
+];
+
+$sheet->getStyle('A3:H9')->applyFromArray($styleArray);
+// $sheet->getStyle('B9')->getBorders()->applyFromArray( [ 'allBorders' => [ 'borderStyle' => Border::BORDER_DASHDOT, 'color' => [ 'rgb' => '808080' ] ] ] );
+// $sheet->getStyle('B2')->getBorders()->getTop()->applyFromArray( [ 'borderStyle' => Border::BORDER_DASHDOT, 'color' => [ 'rgb' => '808080' ] ] );
+$writer = new Xlsx($spreadsheet);
+$time = date('Y-m-dHis');
+$file_name = "leave Log";
+ 
+// Redirect output to a client’s web browser (Xlsx)
+   header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+   header('Content-Disposition: attachment;filename='.$file_name.'.xlsx');
+   header('Cache-Control: max-age=0');
+   // If you're serving to IE 9, then the following may be needed
+   header('Cache-Control: max-age=1');
+   // If you're serving to IE over SSL, then the following may be needed
+   header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+   header('Pragma: public'); // HTTP/1.0
+
+   //$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+   $writer->save('php://output');
+   exit;
+
+}
+public function sidebar()
+{
+  $sidebar= DB::table('menu')
+                      ->select('menu.name','menu.parent','menu.sub_menu')
+                     ->where('parent','=','0')
+                      ->get();
+     
+ $sub_menu=DB::table('menu')
+               ->select('menu.name','menu.parent','menu.sub_menu','menu.menu_url','menu.sidebar_id')
+               //->join('menu','menu.parent','=','menu.sidebar_id')
+                     ->where('parent','=',DB::raw('sidebar_id'))
+                      ->get();
+     
+    $leave_sub= DB::table('menu')
+               ->select('menu.name','menu.parent','menu.sub_menu','menu.menu_url')
+                     ->where('parent','=','2')
+                      ->get();
+     $conveyance_sub= DB::table('menu')
+               ->select('menu.name','menu.parent','menu.sub_menu','menu.menu_url')
+                     ->where('parent','=','3')
+                      ->get();
+                      //dd($sub_menu);
+             return view('includes.sidebar',['sidebar'=>$sidebar,'sub_menu'=>$sub_menu,'leave_sub'=>$leave_sub,'conveyance_sub'=>$conveyance_sub]);
+  
+     
+}
+public function sidebar_menus()
+{
+   //$sidebar_id = $request->input('sidebar_id');
+  $main_menus = DB::table('menu')
+                      ->select('menu.name','menu.menu_id','menu.sub_menu','menu.menu_url')
+                     ->where('menu_type','=','1')
+                      ->get();
+     
+  $sub_menus = DB::table('menu')
+               ->select('menu.name','menu.parent','menu.sub_menu','menu.menu_url','menu.menu_id')
+                     ->where('menu_type','=','2')
+                    ->get();
+      $html = '';
+       foreach($main_menus as $main_menu){
+                  if($main_menu->sub_menu == 1){
+                  $html.= '<li>
+                    <a href="index.html"><i class="fa fa-th-large"></i> 
+                    <span class="nav-label">'.$main_menu->name.'</span> 
+
+                        <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">';                       
+                        
+                    foreach($sub_menus as $sub_menu){
+                      if($sub_menu->parent == $main_menu->menu_id){
+                         $html.= '<li class="active"> 
+                              <a href="'.url($sub_menu->menu_url).'">'. 
+                              $sub_menu->name 
+                              .'</a> </li>';                                
+                          }
+                        }
+                        $html .= '</ul></li>';
+                      } 
+                else{
+                $html.= '<li>
+                    <a href="'.$main_menu->menu_url.'"><i class="fa fa-diamond"></i> <span class="nav-label">'.$main_menu->name.'</span></a>
+                    </li>';
+                  }
+                }
+                 
+
+            echo $html;
+  
+     
 }
 }

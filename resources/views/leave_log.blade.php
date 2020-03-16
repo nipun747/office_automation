@@ -35,4 +35,5 @@ table, th, td {
  </tr>
  @endforeach
  </table>
+ <a href="{{url('/leave_log_excel')}}">Generate Excel</a>
  @endsection

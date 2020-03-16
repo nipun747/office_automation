@@ -94,6 +94,10 @@ Route::get('debit_function_letscheck','Mycontroller@debit_function_letscheck');
 Route::get('test_page','Mycontroller@test_page');
 Route::get('excel','Mycontroller@excel');
 Route::get('excels','Mycontroller@excels');
+Route::get('task','Mycontroller@task');
+Route::get('sidebar','Mycontroller@sidebar');
+Route::get('sidebar_menus','Mycontroller@sidebar_menus');
+Route::get('leave_log_excel','Mycontroller@leave_log_excel');
 
 Route::get('/clear-cache', function() {
      $exitCode = Artisan::call('cache:clear');
