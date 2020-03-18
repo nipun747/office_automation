@@ -61,6 +61,7 @@ i{
  @endforeach
  
 </table>
+<a class="btn btn-primary" href="{{url('/conveyance_excel')}}" role="button">Generate Excel</a>
 
 </body>
 @endsection

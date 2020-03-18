@@ -98,6 +98,7 @@ Route::get('task','Mycontroller@task');
 Route::get('sidebar','Mycontroller@sidebar');
 Route::get('sidebar_menus','Mycontroller@sidebar_menus');
 Route::get('leave_log_excel','Mycontroller@leave_log_excel');
+Route::get('conveyance_excel','Mycontroller@conveyance_excel');
 
 Route::get('/clear-cache', function() {
      $exitCode = Artisan::call('cache:clear');

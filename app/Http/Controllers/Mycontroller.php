@@ -1532,7 +1532,7 @@ $header = ['Leave Category','Start Date','End Date','Applied Leave(days)','Leave
 $sheet->fromArray($header, null, 'A3');
 $sheet->fromArray($data, null, 'A4');
   $sheet->mergecells('A1:H1');
-  $sheet->setCellValue('A1', 'Hello World !');
+  //$sheet->setCellValue('A1', 'Hello World !');
 $sheet->getStyle('A1:H9')->getAlignment()->applyFromArray( [ 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER, 'textRotation' => 0] );
 foreach(range('A','Z') as $columnID) {
     $sheet->getColumnDimension($columnID)->setAutoSize(true);
@@ -1605,7 +1605,7 @@ public function sidebar()
 }
 public function sidebar_menus()
 {
-   //$sidebar_id = $request->input('sidebar_id');
+  
   $main_menus = DB::table('menu')
                       ->select('menu.name','menu.menu_id','menu.sub_menu','menu.menu_url')
                      ->where('menu_type','=','1')
@@ -1646,5 +1646,87 @@ public function sidebar_menus()
             echo $html;
   
      
+}
+public function conveyance_excel()
+{
+   $employee_id = session()->get('employee_id');
+   $conveyance= DB::table('conveyance')
+                      ->select('conveyance.status','conveyance.id','name','from','date',
+                                'to','by','purpose','taka','conveyance.employee_id','employees.employee_id','employees.line_manager_id','employees.is_line_manager')
+                      ->join('conveyance_status', 'conveyance_status.conveyance_status_id', '=', 'conveyance.status')
+                       ->join('employees', 'employees.employee_id', '=', 'conveyance.employee_id')
+                      // ->join('employees', 'employees.employee_id', '=', 'employees.is_line_manager')
+                       ->where('employees.employee_id',$employee_id )
+                       ->orderBy('conveyance.id','DESC')
+                      ->get();
+
+      
+                      
+  $data = [];
+  $i = 0;
+   foreach ($conveyance as $key => $value) {
+    $data[$i]['name'] = $value->name;
+      $data[$i]['date'] = $value->date;
+      $data[$i]['from'] = $value->from;
+      $data[$i]['to'] = $value->to;
+      $data[$i]['by'] = $value->by;
+      $data[$i]['purpose'] = $value->purpose;
+      $data[$i]['taka'] = $value->taka;
+      
+      
+      $i++;
+    }
+ // dd($data);
+$spreadsheet = new Spreadsheet();
+$sheet = $spreadsheet->getActiveSheet();
+
+$header = ['Employee Name','Date','From','To','By','Purpose','Taka'];
+$sheet->fromArray($header, null, 'A3');
+$sheet->fromArray($data, null, 'A4');
+  $sheet->mergecells('A1:H1');
+  //$sheet->setCellValue('A1', 'Hello World !');
+$sheet->getStyle('A1:H9')->getAlignment()->applyFromArray( [ 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER, 'textRotation' => 0] );
+foreach(range('A','Z') as $columnID) {
+    $sheet->getColumnDimension($columnID)->setAutoSize(true);
+}
+$sheet->getStyle('A1:H1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('2eb9d1');
+//$sheet->setCellValue('A1', 'Hello World !');
+$sheet->getStyle('A3:H3')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('d1483f');
+
+$sheet->getPageSetup()->setFitToWidth(1);
+$sheet->getPageMargins()->setTop(1);
+$sheet->getPageMargins()->setRight(0.75);
+$sheet->getPageMargins()->setLeft(0.75);
+$sheet->getPageMargins()->setBottom(1);
+$styleArray = [
+    'borders' => [
+        'outline' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+            'color' => ['argb' => '34ebeb'],
+        ],
+    ],
+];
+
+$sheet->getStyle('A3:H9')->applyFromArray($styleArray);
+// $sheet->getStyle('B9')->getBorders()->applyFromArray( [ 'allBorders' => [ 'borderStyle' => Border::BORDER_DASHDOT, 'color' => [ 'rgb' => '808080' ] ] ] );
+// $sheet->getStyle('B2')->getBorders()->getTop()->applyFromArray( [ 'borderStyle' => Border::BORDER_DASHDOT, 'color' => [ 'rgb' => '808080' ] ] );
+$writer = new Xlsx($spreadsheet);
+$time = date('Y-m-dHis');
+$file_name = "MY conveyance";
+ 
+// Redirect output to a client’s web browser (Xlsx)
+   header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+   header('Content-Disposition: attachment;filename='.$file_name.'.xlsx');
+   header('Cache-Control: max-age=0');
+   // If you're serving to IE 9, then the following may be needed
+   header('Cache-Control: max-age=1');
+   // If you're serving to IE over SSL, then the following may be needed
+   header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+   header('Pragma: public'); // HTTP/1.0
+
+   //$writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+   $writer->save('php://output');
+   exit;
+
 }
 }

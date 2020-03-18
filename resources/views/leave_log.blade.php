@@ -35,5 +35,9 @@ table, th, td {
  </tr>
  @endforeach
  </table>
- <a href="{{url('/leave_log_excel')}}">Generate Excel</a>
+ 
+          
+          <a class="btn btn-primary" href="{{url('/leave_log_excel')}}" role="button">Generate Excel</a>
+ 
+ 
  @endsection
